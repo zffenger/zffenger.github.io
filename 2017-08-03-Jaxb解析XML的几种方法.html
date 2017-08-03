@@ -1,0 +1,719 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="XML 是一种网络通信的数据交换的重要公共语言，是跨平台跨语言通信的一种重要手段，也是复杂配置文件的常用格式。在 Java 中操作 XML 是相当方便的，常用的读取解析xml的方式有DOM（Document Object Mode）模型和SAX（Simple API for XML）模型等，这些方式网络上的资料非常多，这里不再赘述。 无论是DOM模型还是SAX模型，都需要用户根据XML文件的内容格">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java解析XML的几种方法">
+<meta property="og:url" content="http://fengzhaofeng.net/2017-08-03-Jaxb解析XML的几种方法.html">
+<meta property="og:site_name" content="兆峰的博客">
+<meta property="og:description" content="XML 是一种网络通信的数据交换的重要公共语言，是跨平台跨语言通信的一种重要手段，也是复杂配置文件的常用格式。在 Java 中操作 XML 是相当方便的，常用的读取解析xml的方式有DOM（Document Object Mode）模型和SAX（Simple API for XML）模型等，这些方式网络上的资料非常多，这里不再赘述。 无论是DOM模型还是SAX模型，都需要用户根据XML文件的内容格">
+<meta property="og:updated_time" content="2017-08-03T12:07:08.110Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java解析XML的几种方法">
+<meta name="twitter:description" content="XML 是一种网络通信的数据交换的重要公共语言，是跨平台跨语言通信的一种重要手段，也是复杂配置文件的常用格式。在 Java 中操作 XML 是相当方便的，常用的读取解析xml的方式有DOM（Document Object Mode）模型和SAX（Simple API for XML）模型等，这些方式网络上的资料非常多，这里不再赘述。 无论是DOM模型还是SAX模型，都需要用户根据XML文件的内容格">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fengzhaofeng.net/2017-08-03-Jaxb解析XML的几种方法.html"/>
+
+
+
+
+
+  <title>java解析XML的几种方法 | 兆峰的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">兆峰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不忘初心</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://fengzhaofeng.net/2017-08-03-Jaxb解析XML的几种方法.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="兆峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/author.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="兆峰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java解析XML的几种方法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-03T19:15:42+08:00">
+                2017-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>XML 是一种网络通信的数据交换的重要公共语言，是跨平台跨语言通信的一种重要手段，也是复杂配置文件的常用格式。在 Java 中操作 XML 是相当方便的，常用的读取解析xml的方式有DOM（Document Object Mode）模型和SAX（Simple API for XML）模型等，这些方式网络上的资料非常多，这里不再赘述。</p>
+<p>无论是DOM模型还是SAX模型，都需要用户根据XML文件的内容格式手动配置解析各个元素属性等，使用起来还是不够方便。如果有一种方式能将xml结构与javabean对象相互映射，那将大大简化xml文件解析过程，使用起来非常方便。</p>
+<p><strong><em>本文介绍Jaxb对xml文件的解析。</em></strong></p>
+<p>Jaxb（Java Architecture for XML Binding) 是一个业界的标准，它使用注解配置，提供XML文件与Java对象之间的自动映射。JDK6以上版本已经集成JAXB功能，无需第三方依赖即可直接使用。</p>
+<h3 id="从JavaBean对象到XML的映射"><a href="#从JavaBean对象到XML的映射" class="headerlink" title="从JavaBean对象到XML的映射"></a>从JavaBean对象到XML的映射</h3><p>首先创建一个JavaBean类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"></div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlAttribute;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlList;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlRootElement;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlType;</div><div class="line"></div><div class="line"><span class="meta">@XmlRootElement</span>(name = <span class="string">"doc"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DocType</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> String name;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">	<span class="keyword">private</span> String attr;</div><div class="line">	<span class="keyword">private</span> List&lt;String&gt; lst;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getLst</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> lst;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> DocType <span class="title">setLst</span><span class="params">(List&lt;String&gt; lst)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.lst = lst;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@XmlAttribute</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getAttr</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> attr;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAttr</span><span class="params">(String attr)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.attr = attr;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> name;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.name = name;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> id;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.id = id;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"DocType [name="</span> + name + <span class="string">", id="</span> + id + <span class="string">", attr="</span> + attr + <span class="string">", lst="</span> + lst + <span class="string">"]"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>测试类（测试从javaBean映射到XML）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.Arrays;</div><div class="line"></div><div class="line"><span class="keyword">import</span> javax.xml.bind.JAXBContext;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.JAXBException;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.Marshaller;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaBean2XMLTest</span></span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JAXBException </span>&#123;</div><div class="line">		<span class="comment">//从JavaBean对象到XML文件</span></div><div class="line">		DocType doc = <span class="keyword">new</span> DocType();</div><div class="line">		doc.setName(<span class="string">"Lee"</span>);</div><div class="line">		doc.setId(<span class="number">11</span>);</div><div class="line">		doc.setAttr(<span class="string">"attr"</span>);</div><div class="line">		doc.setLst(Arrays.asList(<span class="string">"lst1"</span>,<span class="string">"lst2"</span>));</div><div class="line">		<span class="comment">//</span></div><div class="line">		JAXBContext context = JAXBContext.newInstance(DocType.class);</div><div class="line">		Marshaller marshaller = context.createMarshaller();</div><div class="line">        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, <span class="keyword">true</span>);</div><div class="line">        marshaller.setProperty(Marshaller.JAXB_ENCODING, <span class="string">"utf-8"</span>);</div><div class="line">        marshaller.marshal(doc, System.out);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8" standalone="yes"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">doc</span> <span class="attr">attr</span>=<span class="string">"attr"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>11<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">lst</span>&gt;</span>lst1<span class="tag">&lt;/<span class="name">lst</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">lst</span>&gt;</span>lst2<span class="tag">&lt;/<span class="name">lst</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>Lee<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">doc</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="从XML到JavaBean对象的映射"><a href="#从XML到JavaBean对象的映射" class="headerlink" title="从XML到JavaBean对象的映射"></a>从XML到JavaBean对象的映射</h3><p>测试类（测试从XML到JavaBean对象）：<br>将上述XML内容保持在文件 D:/test.xml中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.io.FileInputStream;</div><div class="line"><span class="keyword">import</span> java.io.InputStream;</div><div class="line"></div><div class="line"><span class="keyword">import</span> javax.xml.bind.JAXBContext;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.Unmarshaller;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">XML2JavaBeanTest</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		InputStream is=<span class="keyword">new</span> FileInputStream(<span class="string">"D:/test.xml"</span>);</div><div class="line">        String packageName = DocType.class.getPackage().getName();</div><div class="line">        JAXBContext jc = JAXBContext.newInstance(packageName);</div><div class="line">        Unmarshaller u = jc.createUnmarshaller();</div><div class="line">       DocType doc = (DocType)u.unmarshal(is);</div><div class="line">       System.out.println(doc);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个测试代码会抛出异常javax.xml.bind.JAXBException。原因是从XML到JavaBean对象需要创建JavaBean对象，JAXB不会自动去new一个JavaBean对象，而是在Context中查找已注册ObjectFactory的类，然后使用该类创建对象。因而我们在 DocType.java相同的包下创建一个ObjectFactory类，并加上@XmlRegistry<br>注解，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlRegistry;</div><div class="line"></div><div class="line"><span class="meta">@XmlRegistry</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectFactory</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> DocType <span class="title">createDocType</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">new</span> DocType();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后再运行上述测试类，输出如下：</p>
+<blockquote>
+<p>DocType [name=Lee, id=11, attr=attr, lst=[lst1, lst2]]</p>
+</blockquote>
+<p>这正是DocType类的toString内容，说明了从XML到JavaBean对象映射成功。</p>
+<p>Jaxb对JavaBean与XML映射时，默认将所有的public属性和方法都映射为XML元素，即AccessType为PUBLIC_MEMBER。对于上述DocType类，我们也可以省略掉所有的public的get和set方法，在类上加注解@XmlAccessorType(XmlAccessType.FIELD)同样可以实现从XML到JavaBean内容的映射，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@XmlRootElement</span>(name = <span class="string">"doc"</span>)</div><div class="line"><span class="meta">@XmlAccessorType</span>(XmlAccessType.FIELD)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DocType</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> String name;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">	<span class="meta">@XmlAttribute</span></div><div class="line">	<span class="keyword">private</span> String attr;</div><div class="line">	<span class="keyword">private</span> List&lt;String&gt; lst;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"DocType [name="</span> + name + <span class="string">", id="</span> + id + <span class="string">", attr="</span> + attr + <span class="string">", lst="</span> + lst + <span class="string">"]"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将DocType改为上面代码后运行XML2JavaBeanTest 测试类，输出相同的内容。</p>
+<p>如果希望某个JavaBean属性映射为XML元素的属性而非XML元素值，可以在对应的属性上加注解@XmlAttribute，如上述代码中的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@XmlAttribute</span></div><div class="line"><span class="keyword">private</span> String attr;</div></pre></td></tr></table></figure>
+<h3 id="更加复杂的映射"><a href="#更加复杂的映射" class="headerlink" title="更加复杂的映射"></a>更加复杂的映射</h3><p>对于更加复杂的映射，下面给出一个例子，涵盖了多层次的引用、枚举、自定义父元素标签、自定义映射适配器、XmlTransient注解映射忽略等内容，不再详细讲解，根据代码注释就可以看得懂。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"></div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlElementWrapper;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlRootElement;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlTransient;</div><div class="line"></div><div class="line"><span class="meta">@XmlRootElement</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RefDocType</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="keyword">private</span> String name;</div><div class="line">	<span class="comment">//引用类型</span></div><div class="line">	<span class="keyword">private</span> SubType subType;</div><div class="line">	<span class="comment">//多层次引用类型</span></div><div class="line">	<span class="keyword">private</span> SubValue subTypeValue;</div><div class="line">	<span class="comment">//列表类型</span></div><div class="line">	<span class="keyword">private</span> List&lt;String&gt; lst;</div><div class="line">	<span class="comment">//不序列化到xml文件中,对应public方法上加注解@XmlTransient</span></div><div class="line">	<span class="keyword">private</span> String transName;</div><div class="line">	<span class="comment">//枚举类型</span></div><div class="line">	<span class="keyword">private</span> SubEnumType subElem=SubEnumType.E1;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> SubEnumType <span class="title">getSubElem</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> subElem;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSubElem</span><span class="params">(SubEnumType subElem)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.subElem = subElem;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> SubValue <span class="title">getSubTypeValue</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> subTypeValue;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSubTypeValue</span><span class="params">(SubValue subTypeValue)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.subTypeValue = subTypeValue;</div><div class="line">	&#125;</div><div class="line">	<span class="comment">//这个注解表示不映射该属性到xml中</span></div><div class="line">	<span class="meta">@XmlTransient</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getTransName</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> transName;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTransName</span><span class="params">(String transName)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.transName = transName;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> name;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.name = name;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> SubType <span class="title">getSubType</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> subType;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSubType</span><span class="params">(SubType subType)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.subType = subType;</div><div class="line">	&#125;</div><div class="line">	<span class="comment">//这个注解标明在该元素外增加一个父元素“myWapper”</span></div><div class="line">	<span class="meta">@XmlElementWrapper</span>(name=<span class="string">"myWapper"</span>)</div><div class="line">	<span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getLst</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> lst;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLst</span><span class="params">(List&lt;String&gt; lst)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.lst = lst;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlEnum;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlEnumValue;</div><div class="line"></div><div class="line"><span class="meta">@XmlEnum</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SubEnumType &#123;</div><div class="line">	</div><div class="line">    <span class="meta">@XmlEnumValue</span>(<span class="string">"e1"</span>)</div><div class="line">    E1(<span class="string">"e1"</span>),</div><div class="line">    <span class="meta">@XmlEnumValue</span>(<span class="string">"e2"</span>)</div><div class="line">    E2(<span class="string">"e2"</span>);</div><div class="line">    <span class="comment">// ...(more enum constant definitions)</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String value;</div><div class="line"></div><div class="line">    SubEnumType(String v) &#123;</div><div class="line">        value = v;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> value;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SubEnumType <span class="title">fromValue</span><span class="params">(String v)</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (SubEnumType c: SubEnumType.values()) &#123;</div><div class="line">            <span class="keyword">if</span> (c.value.equals(v)) &#123;</div><div class="line">                <span class="keyword">return</span> c;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(v.toString());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubSubValue</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> String v=<span class="string">"subsubValue"</span>;</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubType</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="keyword">private</span> String value;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getValue</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> value;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> SubType <span class="title">setValue</span><span class="params">(String value)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.value = value;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.XmlValue;</div><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubValue</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> SubSubValue value;</div><div class="line"></div><div class="line">	<span class="comment">//该JavaBean属性本身是一个引用类型的对象，默认会映射为一个XML元素</span></div><div class="line">	<span class="comment">//@XmlValue标明将该JavaBean属性直接映射为一个XML元素的值</span></div><div class="line">	<span class="comment">//Jaxb不知道该如何将其直接映射为元素值，因此使用一个自定义适配器 MyAdapter</span></div><div class="line">	<span class="meta">@XmlValue</span></div><div class="line">	<span class="meta">@XmlJavaTypeAdapter</span>(MyAdapter.class)</div><div class="line">	<span class="function"><span class="keyword">public</span> SubSubValue <span class="title">getValue</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> value;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> SubValue <span class="title">setValue</span><span class="params">(SubSubValue value)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.value = value;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> javax.xml.bind.annotation.adapters.XmlAdapter;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">XmlAdapter</span>&lt;<span class="title">String</span>, <span class="title">SubSubValue</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> SubSubValue <span class="title">unmarshal</span><span class="params">(String v)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">new</span> SubSubValue();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">marshal</span><span class="params">(SubSubValue v)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		<span class="keyword">return</span> v.v;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>测试类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ComplexReflectionTest</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JAXBException </span>&#123;</div><div class="line">		RefDocType ref=<span class="keyword">new</span> RefDocType();</div><div class="line">		ref.setName(<span class="string">"ref"</span>);</div><div class="line">		ref.setSubType(<span class="keyword">new</span> SubType().setValue(<span class="string">"subValue"</span>));</div><div class="line">		ref.setSubTypeValue(<span class="keyword">new</span> SubValue().setValue(<span class="keyword">new</span> SubSubValue()));</div><div class="line">		ref.setTransName(<span class="string">"transName"</span>);</div><div class="line">		List&lt;String&gt; lst =<span class="keyword">new</span> ArrayList&lt;String&gt;(Arrays.asList(<span class="string">"lst1"</span>,<span class="string">"lst2"</span>));</div><div class="line">		ref.setLst(lst);</div><div class="line">		<span class="comment">//</span></div><div class="line">		JAXBContext context = JAXBContext.newInstance(ref.getClass());</div><div class="line">		Marshaller marshaller = context.createMarshaller();</div><div class="line">        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, <span class="keyword">true</span>);</div><div class="line">        marshaller.setProperty(Marshaller.JAXB_ENCODING, <span class="string">"utf-8"</span>);</div><div class="line">        marshaller.marshal(ref, System.out);</div><div class="line">		<span class="comment">//</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8" standalone="yes"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">refDocType</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">myWapper</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">lst</span>&gt;</span>lst1<span class="tag">&lt;/<span class="name">lst</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">lst</span>&gt;</span>lst2<span class="tag">&lt;/<span class="name">lst</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">myWapper</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>ref<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">subElem</span>&gt;</span>e1<span class="tag">&lt;/<span class="name">subElem</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">subType</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>subValue<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">subType</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">subTypeValue</span>&gt;</span>subsubValue<span class="tag">&lt;/<span class="name">subTypeValue</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">refDocType</span>&gt;</span></div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>‘支持一杯可乐吧！’</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/weixin.png" alt="兆峰 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/alipay.png" alt="兆峰 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017-08-03-ORMLite使用指南.html" rel="next" title="ORMLite使用指南">
+                <i class="fa fa-chevron-left"></i> ORMLite使用指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017-08-03-Java多线程之多线程的创建与同步.html" rel="prev" title="java多线程之多线程的创建与同步">
+                java多线程之多线程的创建与同步 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/author.jpg"
+               alt="兆峰" />
+          <p class="site-author-name" itemprop="name">兆峰</p>
+           
+              <p class="site-description motion-element" itemprop="description">兆峰的博客</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#从JavaBean对象到XML的映射"><span class="nav-number">1.</span> <span class="nav-text">从JavaBean对象到XML的映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从XML到JavaBean对象的映射"><span class="nav-number">2.</span> <span class="nav-text">从XML到JavaBean对象的映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更加复杂的映射"><span class="nav-number">3.</span> <span class="nav-text">更加复杂的映射</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">兆峰</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
