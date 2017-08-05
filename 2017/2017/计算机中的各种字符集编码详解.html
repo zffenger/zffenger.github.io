@@ -1,0 +1,1324 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="编解码,乱码," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="作为一个程序员，一个中国的程序员，想来“乱码”问题基本上都遇到过，也为之头疼过。出现乱码问题的根本原因是编码与解码使用了不同而且不兼容的“标准”，在国内一般出现在中文的编解码过程中。 我们平时常见的编码有Unicode，GBK，ASCII，utf8，utf16，ISO8859-1等，弄清这些编码之间的关系，就不难理解“乱码”出现的原因以及解决办法。 所谓字符集编码其实就是将字符（包括英文字符、特殊">
+<meta name="keywords" content="编解码,乱码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机中的各种字符集编码">
+<meta property="og:url" content="http://fengzhaofeng.net/2017/2017/计算机中的各种字符集编码详解.html">
+<meta property="og:site_name" content="兆峰的博客">
+<meta property="og:description" content="作为一个程序员，一个中国的程序员，想来“乱码”问题基本上都遇到过，也为之头疼过。出现乱码问题的根本原因是编码与解码使用了不同而且不兼容的“标准”，在国内一般出现在中文的编解码过程中。 我们平时常见的编码有Unicode，GBK，ASCII，utf8，utf16，ISO8859-1等，弄清这些编码之间的关系，就不难理解“乱码”出现的原因以及解决办法。 所谓字符集编码其实就是将字符（包括英文字符、特殊">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/GCH2L5b2dD.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/AGIC40lBCD.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/3IKL16fKa2.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/ddHDIkbJHb.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/A0J9CG9feC.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/ghi08AbGLk.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/bKlcfjdlfb.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/aghkCjL23A.png?imageslim">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/3cm7G27Ki0.png?imageslim">
+<meta property="og:updated_time" content="2017-08-05T15:17:26.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机中的各种字符集编码">
+<meta name="twitter:description" content="作为一个程序员，一个中国的程序员，想来“乱码”问题基本上都遇到过，也为之头疼过。出现乱码问题的根本原因是编码与解码使用了不同而且不兼容的“标准”，在国内一般出现在中文的编解码过程中。 我们平时常见的编码有Unicode，GBK，ASCII，utf8，utf16，ISO8859-1等，弄清这些编码之间的关系，就不难理解“乱码”出现的原因以及解决办法。 所谓字符集编码其实就是将字符（包括英文字符、特殊">
+<meta name="twitter:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/GCH2L5b2dD.png?imageslim">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":true,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fengzhaofeng.net/2017/2017/计算机中的各种字符集编码详解.html"/>
+
+
+
+
+
+  <title>计算机中的各种字符集编码 | 兆峰的博客</title>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63288986";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">兆峰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不忘初心</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://fengzhaofeng.net/2017/2017/计算机中的各种字符集编码详解.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="兆峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/author.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="兆峰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">计算机中的各种字符集编码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-05T23:00:00+08:00">
+                2017-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/2017/计算机中的各种字符集编码详解.html#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/2017/计算机中的各种字符集编码详解.html" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作为一个程序员，一个中国的程序员，想来“乱码”问题基本上都遇到过，也为之头疼过。出现乱码问题的根本原因是编码与解码使用了不同而且不兼容的“标准”，在国内一般出现在中文的编解码过程中。</p>
+<p>我们平时常见的编码有<code>Unicode</code>，<code>GBK</code>，<code>ASCII</code>，<code>utf8</code>，<code>utf16</code>，<code>ISO8859-1</code>等，弄清这些编码之间的关系，就不难理解“乱码”出现的原因以及解决办法。</p>
+<p>所谓字符集编码其实就是将字符（包括英文字符、特殊符号，控制字符，数字，汉子等）与计算机中的一个数字（二进制存储）一一对应起来，用这个数字来表示该字符，存储该字符的时候就存储这个数字。比如a对应数字97。因此，理解编码很简单，所有的编码都是字符与数字的一种对应关系。</p>
+<h2 id="ASCII编码："><a href="#ASCII编码：" class="headerlink" title="ASCII编码："></a>ASCII编码：</h2><p>计算机最早出现在美国，因此老美搞编码只需要对26个英文字符大小写以及常用的字符对应数字就可以了，这种对应就是<code>ASCII</code>（American Standard Code for Information Interchange，美国信息互换标准代码）码。标准<code>ASCII</code> 码使用7 位二进制数来表示<strong>所有的大写和小写字母，数字0 到9、标点符号， 以及在美式英语中使用的特殊控制字符</strong>。这样可以表示2^7=128个字符。标准ASCII码的最高位恒为0，没有使用。</p>
+<p>用<code>java</code>输出英文字符的<code>ASCII</code>码代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCode</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">int</span> code=<span class="string">'a'</span>;</div><div class="line">        System.out.println(code);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出:</p>
+<blockquote>
+<p>97</p>
+</blockquote>
+<h2 id="ISO8859-1："><a href="#ISO8859-1：" class="headerlink" title="ISO8859-1："></a>ISO8859-1：</h2><p>随着计算机的推广，世界各地都开始使用计算机。各国不同语言对字符编码提出了新的需求，原<code>ASCII</code>的128个字符已经显得严重不足。那怎么办呢，ASCII码不是只用了一个字节中的7位吗，还剩余1位呢？那就赶紧用上吧！于是人们把编码扩展到了8位，即256个字符的编码，这就是<code>ISO8859-1</code>。这种扩展保持了与ASCII的兼容性，即最高位为0的<code>ISO8859-1</code>编码等同于<code>ASCII</code>码。</p>
+<p>用java随便输出一个<code>iso8859-1</code>字符如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCode</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">char</span> code=<span class="number">0xA7</span>;</div><div class="line">        System.out.println(code);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出:</p>
+<blockquote>
+<p>§</p>
+</blockquote>
+<h2 id="GBK码："><a href="#GBK码：" class="headerlink" title="GBK码："></a>GBK码：</h2><p>等到计算机进入中国，人们又头疼了。常用汉字就有6000多个，像<code>ASCII</code>那样用一个字节来编码撑爆了也不够啊。但是这难不倒智慧的中国人们，我们直接定下标准：小于127的字符与原意义相同（保持与<code>ASCII</code>的兼容性），但是两个大于127的字符连在一起时，就表示一个汉字。这样我们就凑出来了7000多个简体汉字的编码了。此外，这些编码还对ASCII码中已有的标点、数字、字母都用两字节重新编码，这就是通常说的“全角”字符。这种编码就是<code>GB2312</code>。</p>
+<p>但是中国的汉字实在太多了，<code>GB2312</code>还是不够用，一些不常用的汉字还是显示不出来啊。于是我们不得不继续挖掘<code>GB2312</code>的潜能，干脆只要求第一个字节大于127而不管后一个字节的大小了。这种扩展之后的编码方案称为<code>GBK</code>。</p>
+<p>下图为中文“<code>你好</code>”二字的<code>GB2312</code>编码输出（<code>GBK</code>输出相同）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCode</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        String s = <span class="string">"你好"</span>;</div><div class="line">        <span class="keyword">byte</span>[] code = s.getBytes(<span class="string">"gb2312"</span>);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> b : code) &#123;</div><div class="line">            System.out.print(Integer.toHexString(b &amp; <span class="number">0xFF</span>) + <span class="string">" "</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出:</p>
+<blockquote>
+<p>c4 e3 ba c3</p>
+</blockquote>
+<h2 id="Unicode码："><a href="#Unicode码：" class="headerlink" title="Unicode码："></a>Unicode码：</h2><p>中国造出了<code>GBK</code>编码，其他国家呢，他们也要显示自己的文字啊。于是各个国家都搞出了一套自己的编码标准，结果相互之间谁也不懂谁的编码，互不兼容。这样不行啊，于是乎<code>ISO</code>（国际标谁化组织）不得不站出来说话了：“你们都不要各自搞编码了，我给你们搞一套统一的！”。于是<code>ISO</code>搞了一个全球统一的字符集编码方案，叫<code>UCS(Universal Character Set)</code>，俗称<code>Unicode</code>。</p>
+<p><code>Unicode</code>标准最早是1991年发布了，目前实际应用的版本是<code>UCS-2</code>，即使用两个字节编码字符。这样理论上一共可以编码<code>2^16=65536</code>个字符，基本能够满足各种语言的需求。</p>
+<h2 id="UTF8、UTF16码："><a href="#UTF8、UTF16码：" class="headerlink" title="UTF8、UTF16码："></a>UTF8、UTF16码：</h2><p>其实<code>Unicode</code>码已经完美解决编码国际化问题了，那<code>utf8</code>和<code>utf16</code>又是神马东东，用来解决什么问题呢？</p>
+<p>前面已经说过，编码只是字符与数字的一种对应关系，这完全是一个数学问题，跟计算机和存储以及网络都没有半毛钱关系。<code>Unicode</code>码就是这样一种对应关系，它并没有涉及到如何存储以及传输的问题。看下面一个例子：</p>
+<p>假如某个字符的<code>Unicode</code>编码为<code>0xabcd</code>，也就是两个字节。那存储的时候是哪个字节在前哪个在后呢？网络传输的时候又是先传输哪个字节呢？计算机从文件中读取到<code>0xabcd</code>又是怎么知道这是两个<code>ASCII</code>码还是一个<code>Unicode</code>码呢？</p>
+<p>因此需要一种统一的存储和传输格式来标示<code>Unicode</code>码。这种统一的实现方式称为<code>Unicode</code>转换格式<code>（Unicode Transformation Format，简称为UTF）</code>。 编码<code>utf8</code>和<code>utf16</code>就是因此而产生的。</p>
+<p>其中<code>utf16</code>与<code>16</code>位的<code>Unicode</code>码完全对应。在Mac和普通PC上，对于字节顺序的理解是不一致的。比如MAC是从低字节开始读取的，因此前文的<code>0xabcd</code>如果按照所见的顺序存储，则会被MAC认为是<code>0xcdab</code>,而windows会从高字节开始读取，得到的是<code>0xabcd</code>，这样根据<code>Unicode</code>码表对应出来的字符就不一致了。</p>
+<p>因此，<code>utf16</code>规定使用了大端序（<code>Big-Endian</code>，简写为<code>UTF-16 BE</code>）、 小端序（<code>Little-Endian</code>，简写为<code>UTF-16 LE</code>）以及<code>BOM</code>（<code>byte order mark</code>）的概念。如果在<code>windows</code>上用记事本写上一些中文字符并以<code>Unicode</code>码格式保存，然后使用十六进制查看器打开即可以看到文件的前两个字节为<code>0xfffe</code>(<code>0xfffe</code>在<code>Unicode</code>码中不对应字符),用来标记使用小端序存储（windows平台默认使用小端序）,</p>
+<p>下图为中文“你好”二字在windows7上的十六进制数据。</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/GCH2L5b2dD.png?imageslim" alt="mark"></p>
+<p>如果用java程序输出“你好”二字的<code>utf16</code>码，则如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCode</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        String s = <span class="string">"你好"</span>;</div><div class="line">        <span class="keyword">byte</span>[] code = s.getBytes(<span class="string">"utf16"</span>);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> b : code) &#123;</div><div class="line">            System.out.print(Integer.toHexString(b &amp; <span class="number">0xFF</span>) + <span class="string">" "</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出:</p>
+<blockquote>
+<p>fe ff 4f 60 59 7d</p>
+</blockquote>
+<p>可以看到<code>java</code>默认输出的是大端序的<code>utf16</code>编码（<code>BOM</code>为<code>0xfeff</code>）。</p>
+<p>由于<code>Unicode</code>统一采用16位二进制编码字符，试想一篇英文文章如果用<code>UTF16</code>来存储的话整整比用<code>ASCII</code>存储多占用一倍的存储空间（英文字符的<code>Unicode</code>码高字节是0），这样白白的浪费让人于心不忍啊。于是<code>utf8</code>诞生了。<code>utf8</code>是一种变长编码，根据不同的<code>Unicode</code>码值采用不同的存储长度。那么问题又来了，既然是变长的系统怎么知道几个字节表示一个字符编码呢？<br>对于这类问题计算机中通用的处理方式就是使用标志位，就像ip段的划分一样。具体如下：</p>
+<ul>
+<li><code>0xxxxxxx</code>,如果是这样的<code>01</code>串,也就是以<code>0</code>开头后面是啥就不用管了<code>XX</code>代表任意bit.就表示把一个字节做为一个单元.就跟<code>ASCII</code>完全一样.</li>
+<li><code>110xxxxx 10xxxxxx</code>.如果是这样的格式,则把两个字节当一个单元</li>
+<li><code>1110xxxx 10xxxxxx 10xxxxxx</code> 如果是这种格式则是三个字节当一个单元.</li>
+</ul>
+<p>用java输出“你好”的<code>utf8</code>编码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCode</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        String s = <span class="string">"你好"</span>;</div><div class="line">        <span class="keyword">byte</span>[] code = s.getBytes(<span class="string">"utf8"</span>);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> b : code) &#123;</div><div class="line">            System.out.print(Integer.toHexString(b &amp; <span class="number">0xFF</span>) + <span class="string">" "</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出:</p>
+<blockquote>
+<p>e4 bd a0 e5 a5 bd</p>
+</blockquote>
+<p>我们可以跟上面对应一下，“你”字的第一个字节<code>0xe4</code>的高四位二进制是<code>1110</code>，因此这是一个三字节编码，系统识别时就一次读取三个字节再组合成<code>Unicode</code>码数字，然后就可以对应到字符“你”了。字符“好”类似。</p>
+<h2 id="Unicode码的发展"><a href="#Unicode码的发展" class="headerlink" title="Unicode码的发展"></a>Unicode码的发展</h2><p><code>Unicode</code>码采用16位编码世界字符其实还是有点捉襟见肘的。因此从 <code>Unicode 3.1</code> 版本开始，设立了16个辅助平面（相当于<code>Unicode</code>码又扩充了4位, 2^4=16），使 <code>Unicode</code> 的可使用空间由六万多字增至约一百万字。用白话说就是增加了几个区段，比如原始版本的<code>Unicode</code>码的范围是<code>0x0000 ~ 0xffff</code>， 第一辅助平面的范围是<code>0x10000~0x1FFFD</code>,第二辅助平面的范围是<code>0x20000 ~ 0x2FFFD</code>,……</p>
+<p>最新版的<code>Unicode</code>码规范提出了<code>UCS-4</code>，即使用4字节做<code>Unicode</code>编码。类似前面的<code>utf16</code>，对于<code>UCS-4</code>的<code>Unicode</code>码，可以采用<code>utf32</code>来存储，同样需要定义大小端序和<code>BOM</code>信息。</p>
+<h2 id="URLEncode"><a href="#URLEncode" class="headerlink" title="URLEncode"></a>URLEncode</h2><p><code>URL</code>编解码是<code>WEB</code>开发中常用的编解码方法，这种编码不同于上面介绍的几种编码。上文中介绍的编码都是将一个字符对应到一个数字上，而URL编码则是字符替换，将一些非<code>ASCII</code>字符和一些容易引起问题的字符替换为其编码字符，解码时原样替换回来，从而解决<code>url</code>在网络传输中的乱码问题。</p>
+<p>看下面一个例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestUrlCode</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        String url=<span class="string">"http://www.baidu.com?username=你好"</span>;</div><div class="line">        String encodeStr=java.net.URLEncoder.encode(url, <span class="string">"utf8"</span>);</div><div class="line">        System.out.println(encodeStr);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出：</p>
+<blockquote>
+<p>http%3A%2F%2Fwww.baidu.com%3Fusername%3D%E4%BD%A0%E5%A5%BD</p>
+</blockquote>
+<p>我们将原<code>url</code>与编码后的<code>url</code>做一个对比（这里为了让原字符与编码字符对照起来加了一些空格）：</p>
+<blockquote>
+<p>http:   / /  www.baidu.com?  username=   你        好<br>http%3A%2F%2Fwww.baidu.com%3Fusername%3D%E4%BD%A0%E5%A5%BD</p>
+</blockquote>
+<p>对比发现，编码后<code>http</code>、<code>www.baidu.com</code>、<code>username</code>这一些并没有改变，<code>：</code>被替换为<code>%3A</code>, <code>/</code>被替换为<code>%2F</code>, <code>?</code>被替换为<code>%3F</code>,<code>=</code>被替换为<code>%3D</code>, <code>你好</code>被替换为<code>%E4%BD%A0%E5%A5%BD</code>,这些%后面的十六进制字符都是哪里来的呢，其实就是原字符的<code>utf8</code>码值。前面我们已经看过<code>你好</code>的<code>utf8</code>码为<code>e4 bd a0 e5 a5 bd</code>，这些十六进制转换为字符串形式然后在前面加上<code>%</code> 就是<code>URL</code>编码了。因此解码就是将这些字符串去掉<code>%</code>然后用utf8码译出来 。</p>
+<h2 id="常见乱码问题："><a href="#常见乱码问题：" class="headerlink" title="常见乱码问题："></a>常见乱码问题：</h2><p>前文提到，文件保存、网络传输时，所保存和传输的都是字符对应的码值，因此查看文件时必须将这些码值反过来对应到相应的字符（解码），才能形成我们人能够看懂的字符串形式。如果解码时选取的解码方式与编码方式不一致呢，这就是乱码问题的根本原因了。看下面几个例子：</p>
+<h3 id="例子1："><a href="#例子1：" class="headerlink" title="例子1："></a>例子1：</h3><p>在中文版的windows系统（本文中使用win7 64位 简体中文旗舰版）桌面上新建txt文件，写上“联通”二字，保存，关闭。然后再双击打开，看到了什么？哇！乱码！</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/AGIC40lBCD.png?imageslim" alt="mark"></p>
+<p>我们看看windows都做了什么。我们写的“联通”俩字没问题，保存，也就是将这俩字对应出几个数字（码值）保存起来，也没问题。等等，windows是选用哪种编码进行保存的呢？用搜索引擎查一下，原来默认选用<code>ANSI</code>编码，对应在中文版windows系统中就是<code>GBK</code>，我们用十六进制查看器验证一下：</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/3IKL16fKa2.png?imageslim" alt="mark"></p>
+<p>果然是<code>GBK</code>。然后我们将这几个十六进制数字的二进制写出来：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">c1    1100 0001</div><div class="line">aa    1010 1010</div><div class="line">cd    1100 1101</div><div class="line">a8    1010 1000</div></pre></td></tr></table></figure></p>
+<p>看第一个字节，以110开头，第二个字节，以10开头，第三个字节，以110开头，第四个字节，以10开头。这不正好符合utf8双字节编码格式吗？因此我们再次双击打开的时候记事本就错误地认为这是utf8编码的文件，这当然的就形成乱码了。</p>
+<p>下面使用<code>notepad++</code>打开，同样乱码。然后选择 <code>格式</code>–<code>以ANSI格式编码</code> 瞬间看到亲切的“联通”二字了！</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/ddHDIkbJHb.png?imageslim" alt="mark"></p>
+<h3 id="例子2："><a href="#例子2：" class="headerlink" title="例子2："></a>例子2：</h3><p>做java开发的童鞋经常遇到原<code>Project</code>导入<code>Eclipse</code>乱码问题，如下图（其实这几个乱码的原字符是“你好”二字）</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/A0J9CG9feC.png?imageslim" alt="mark"></p>
+<p>这个就比较简单了，因为原项目采用GBK编码保存的，新导入项目的Eclipse配置的是utf8编码，用utf8来解码读取gbk编码，乱码是必须滴。解决办法就是将两者保持一致即可。</p>
+<h3 id="例子-3："><a href="#例子-3：" class="headerlink" title="例子 3："></a>例子 3：</h3><p>有时候编码信息是在文件开始的地方声明的，比如<code>xml</code>文件和<code>html</code>文件，如下：</p>
+<p>百度首页的源码精简后摘出一部分源码如下:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"content-type"</span> <span class="attr">content</span>=<span class="string">"text/html;charset=utf8”/&gt;         &lt;/head&gt;</span></span></div><div class="line">    &lt;body&gt;&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>常用的<code>xml</code>文件开头标示如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos;?&gt;</div></pre></td></tr></table></figure></p>
+<p>这样的头部标示可以明确地看到文件的编码信息,然而有时候却会引发另一个问题(主要针对开发者):</p>
+<p>比如我们写一个html文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">    &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;title&gt;test&lt;/title&gt;&lt;/head&gt;</div><div class="line">    &lt;body&gt;</div><div class="line">    aaa你好bbb</div><div class="line">    &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>然后在保存这个文件的时候我们不小心选择了<code>GBK</code>编码保存。这样问题就来了，浏览器在读取这个<code>html</code>文件的时候会按照文件中声明的编码<code>utf8</code>的规则读取，这样中文又成乱码了。（因此各位coder要注意文件保存时的编码，遇到类似的问题也要知道原因和解决办法）</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/ghi08AbGLk.png?imageslim" alt="mark"></p>
+<h3 id="例子4："><a href="#例子4：" class="headerlink" title="例子4："></a>例子4：</h3><p>网络流的乱码问题，看下面java小程序socket通信的例子</p>
+<p>服务器端<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSocket</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">         java.net.ServerSocket ss=<span class="keyword">new</span> java.net.ServerSocket(<span class="number">7777</span>);</div><div class="line">         java.net.Socket socket=ss.accept();</div><div class="line">         <span class="keyword">byte</span>[] buffer=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</div><div class="line">         <span class="keyword">int</span> len=socket.getInputStream().read(buffer);</div><div class="line">         String outStr=<span class="keyword">new</span> String(buffer,<span class="number">0</span>,len,<span class="string">"utf8"</span>);</div><div class="line">         System.out.println(outStr);</div><div class="line">         socket.close();</div><div class="line">         ss.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>客户端<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSocketClient</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span>  Throwable </span>&#123;</div><div class="line">        java.net.Socket client=<span class="keyword">new</span> java.net.Socket(<span class="string">"localhost"</span>,<span class="number">7777</span>);</div><div class="line">        String input=<span class="string">"你好"</span>;</div><div class="line">        client.getOutputStream().write(input.getBytes(<span class="string">"gbk"</span>));</div><div class="line">        client.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>先启动服务器端，再启动客户端，最后可以看到服务器端输出</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/bKlcfjdlfb.png?imageslim" alt="mark"></p>
+<p>这里故意将客户端发送的编码（<code>GBK</code>）与服务器端接收的解码（<code>utf8</code>）设的不一致，出现乱码是必然的。这个错误也是显而易见的。然后并不是所有的通信乱码都是这么明显。比如java中不明确指定编码而使用默认编码，比如使用<code>Reader</code>和<code>Writer</code>对象，这时候编码信息是隐藏的，就不是那么容易发现了。</p>
+<p>如果不确定网络中传输的编码，我们可以用<code>wireshark</code>抓个包看看就知道了。由于<code>wireshark</code>抓本地回环包比较麻烦，所以这里我们做实验的时候把客户端程序中的<code>localhost</code>改为百度的ip，把数据包发给百度好了。对应端口也改为80. 首先我们用<code>nslookup</code>命令查看百度域名对应的ip，然后随便选一个（不同地区可能得到的ip不一样，这里选择第一个<code>180.149.132.47</code>来当小白鼠吧）</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/aghkCjL23A.png?imageslim" alt="mark"></p>
+<p><code>java
+public class TestSocketClient {
+    public static void main(String[] args) throws  Throwable {
+        java.net.Socket client=new java.net.Socket(&quot;180.149.132.47&quot;,80);
+        String input=&quot;你好&quot;;
+        client.getOutputStream().write(input.getBytes(&quot;gbk&quot;));
+        client.close();
+    }
+}</code>java</p>
+<p>抓到的数据包如下图，其中10号数据包就是我们程序发出的数据，数据包前面是各种协议的头信息，最后四个字节（<code>c4 e3 ba c3</code>） 才是传输的内容。这4个字节正好是“你好”二字的GBK编码。</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/3cm7G27Ki0.png?imageslim" alt="mark"></p>
+
+      
+    </div>
+	
+	<div>
+	  
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+	
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>支持一杯可乐吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/weixin.png" alt="兆峰 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/alipay.png" alt="兆峰 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      兆峰
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengzhaofeng.net/2017/2017/计算机中的各种字符集编码详解.html" title="计算机中的各种字符集编码">http://fengzhaofeng.net/2017/2017/计算机中的各种字符集编码详解.html</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编解码/" rel="tag"><i class="fa fa-tag"></i> 编解码</a>
+          
+            <a href="/tags/乱码/" rel="tag"><i class="fa fa-tag"></i> 乱码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/2017/next主题配置记录.html" rel="next" title="next主题配置">
+                <i class="fa fa-chevron-left"></i> next主题配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/2017/关系型数据库知识点小结.html" rel="prev" title="关系型数据库知识小结">
+                关系型数据库知识小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/author.jpg"
+               alt="兆峰" />
+          <p class="site-author-name" itemprop="name">兆峰</p>
+           
+              <p class="site-description motion-element" itemprop="description">兆峰的博客</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zffenger" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/zffenger" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              推荐
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.54tianzhisheng.cn/" title="田志声" target="_blank">田志声</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://siberiawolf.com/free_programming/index.html" title="编程书籍" target="_blank">编程书籍</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ASCII编码："><span class="nav-number">1.</span> <span class="nav-text">ASCII编码：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ISO8859-1："><span class="nav-number">2.</span> <span class="nav-text">ISO8859-1：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GBK码："><span class="nav-number">3.</span> <span class="nav-text">GBK码：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unicode码："><span class="nav-number">4.</span> <span class="nav-text">Unicode码：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTF8、UTF16码："><span class="nav-number">5.</span> <span class="nav-text">UTF8、UTF16码：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unicode码的发展"><span class="nav-number">6.</span> <span class="nav-text">Unicode码的发展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URLEncode"><span class="nav-number">7.</span> <span class="nav-text">URLEncode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见乱码问题："><span class="nav-number">8.</span> <span class="nav-text">常见乱码问题：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子1："><span class="nav-number">8.1.</span> <span class="nav-text">例子1：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子2："><span class="nav-number">8.2.</span> <span class="nav-text">例子2：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子-3："><span class="nav-number">8.3.</span> <span class="nav-text">例子 3：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子4："><span class="nav-number">8.4.</span> <span class="nav-text">例子4：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">兆峰</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt9iedwP';
+      var conf = '3b3713fc7156afdd18b6abd322e1f0e3';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+	<!-- 页面点击小红心 -->
+	<script type="text/javascript" src="/js/src/love.js"></script>
+	<!-- 宠物 -->
+	
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -20px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/z16/z16.model.json")</script>
+  
+</body>
+</html>
