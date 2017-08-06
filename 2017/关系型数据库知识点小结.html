@@ -1,0 +1,1380 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="SQL,数据库," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="基础术语DML（data manipulation language） 如SELECT、UPDATE、INSERT、DELETE，主要用来对数据库里的数据进行操作的语言 DDL（data definition language） 主要的命令有CREATE、ALTER、DROP等，DDL主要是用在定义或改变表（TABLE）的结构，数据类型，表之间的链接和约束等初始化工作上，大多在建立表时使用。 DC">
+<meta name="keywords" content="SQL,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关系型数据库知识小结">
+<meta property="og:url" content="http://fengzhaofeng.net/2017/关系型数据库知识点小结.html">
+<meta property="og:site_name" content="兆峰的博客">
+<meta property="og:description" content="基础术语DML（data manipulation language） 如SELECT、UPDATE、INSERT、DELETE，主要用来对数据库里的数据进行操作的语言 DDL（data definition language） 主要的命令有CREATE、ALTER、DROP等，DDL主要是用在定义或改变表（TABLE）的结构，数据类型，表之间的链接和约束等初始化工作上，大多在建立表时使用。 DC">
+<meta property="og:updated_time" content="2017-08-05T15:14:38.294Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关系型数据库知识小结">
+<meta name="twitter:description" content="基础术语DML（data manipulation language） 如SELECT、UPDATE、INSERT、DELETE，主要用来对数据库里的数据进行操作的语言 DDL（data definition language） 主要的命令有CREATE、ALTER、DROP等，DDL主要是用在定义或改变表（TABLE）的结构，数据类型，表之间的链接和约束等初始化工作上，大多在建立表时使用。 DC">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":true,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fengzhaofeng.net/2017/关系型数据库知识点小结.html"/>
+
+
+
+
+
+  <title>关系型数据库知识小结 | 兆峰的博客</title>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63288986";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">兆峰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不忘初心</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://fengzhaofeng.net/2017/关系型数据库知识点小结.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="兆峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/author.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="兆峰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关系型数据库知识小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-05T23:00:00+08:00">
+                2017-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/关系型数据库知识点小结.html#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/关系型数据库知识点小结.html" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="基础术语"><a href="#基础术语" class="headerlink" title="基础术语"></a>基础术语</h2><p><strong><code>DML（data manipulation language）</code></strong></p>
+<p>如<code>SELECT</code>、<code>UPDATE</code>、<code>INSERT</code>、<code>DELETE</code>，主要用来对数据库里的数据进行操作的语言</p>
+<p><strong><code>DDL（data definition language）</code></strong></p>
+<p>主要的命令有<code>CREATE</code>、<code>ALTER</code>、<code>DROP</code>等，<code>DDL</code>主要是用在定义或改变表（<code>TABLE</code>）的结构，数据类型，表之间的链接和约束等初始化工作上，大多在建立表时使用。</p>
+<p><strong><code>DCL（Data Control Language）</code></strong></p>
+<p>数据库控制功能。是用来设置或更改数据库用户或角色权限的语句，包括（<code>grant</code>,<code>deny</code>,<code>revoke</code>等）语句。默认情况下，只有<code>sysadmin</code>,<code>dbcreator</code>,<code>db_owner</code>或<code>db_securityadmin</code>等人员才有权力执行<code>DCL</code></p>
+<h2 id="数据库三范式"><a href="#数据库三范式" class="headerlink" title="数据库三范式"></a>数据库三范式</h2><p>关系型数据库设计表时为了减小冗余，增强数据的有效性和存储效率，需要遵循一定的规范，这些规范按照严格程度来区分可以分为第一范式（<code>1NF</code>），第二范式（<code>2NF</code>），第三范式（<code>3NF</code>），BC范式（<code>BCNF</code>），第四范式（<code>4NF</code>），第五范式（<code>5NF</code>）等。</p>
+<p>数据库范式是数据库设计中必不可少的理论依据，不理解数据库范式就无法设计出搞笑优雅的数据库，甚至依赖混乱，操作经常出错。实际应用中常用的范式有第一范式（<code>1NF</code>），第二范式（<code>2NF</code>）和第三范式（<code>3NF</code>），后面三个范式则用的比较少，这是因为适当的冗余可以增加数据库的查询效率。</p>
+<h3 id="第一范式（1NF）：属性不可分"><a href="#第一范式（1NF）：属性不可分" class="headerlink" title="第一范式（1NF）：属性不可分"></a>第一范式（1NF）：属性不可分</h3><p>第一范式要求数据库表中所有字段都是不可分的原子值。不满足第一范式的数据库，不是关系数据库！</p>
+<h3 id="第二范式（2NF）：非主属性完全依赖于码"><a href="#第二范式（2NF）：非主属性完全依赖于码" class="headerlink" title="第二范式（2NF）：非主属性完全依赖于码"></a>第二范式（2NF）：非主属性完全依赖于码</h3><p>第二范式是在第一范式的基础上更进一步，要求数据库要有主键，其他非主属性完全依赖于主键，而不能只依赖主键中的一部分。即联合主键的情况，如果某一个非主属性只依赖于联合主键中的一个或者部分属性，则不符合第二范式。第二范式隐式要求数据库一张表只保存一种数据，尽量不要把多种数据保存到一张表中。</p>
+<h3 id="第三范式（3NF）：非主属性之间不存在传递依赖"><a href="#第三范式（3NF）：非主属性之间不存在传递依赖" class="headerlink" title="第三范式（3NF）：非主属性之间不存在传递依赖"></a>第三范式（3NF）：非主属性之间不存在传递依赖</h3><p>第三范式是在第二范式的基础上更进一步，要求属性不能依赖于表中的非主属性。第三范式需要确保数据表中的每一列数据都和主键直接相关，而不能间接相关。</p>
+<h2 id="事务："><a href="#事务：" class="headerlink" title="事务："></a>事务：</h2><p>事务（<code>Transaction</code>）是并发控制的基本单位。所谓事务，即一系列操作的集合，这些操作要么都不执行，要么全部执行，不允许执行其中一部分，即把一系列操作作为一个整体进行控制。<br>比如银行转账，简化下来至少需要两步操作:</p>
+<ol>
+<li>要从A账户扣除100元</li>
+<li>给B账户增加100元</li>
+</ol>
+<p>这两步操作必须作为一个整体进行控制，假如从A账户扣款成功，给B账户增加金额失败，则事务必须回滚（<code>roolback</code>）,即把A账户的扣款返回给A账户。</p>
+<h3 id="事务具有四个基本特征（ACID）："><a href="#事务具有四个基本特征（ACID）：" class="headerlink" title="事务具有四个基本特征（ACID）："></a>事务具有四个基本特征（ACID）：</h3><h4 id="Atomic（原子性）："><a href="#Atomic（原子性）：" class="headerlink" title="Atomic（原子性）："></a>Atomic（原子性）：</h4><p>事务中包含的操作被看做一个逻辑单元，这个逻辑单元中的操作要么全部成功，要么全部失败。</p>
+<h4 id="Consistency（一致性）："><a href="#Consistency（一致性）：" class="headerlink" title="Consistency（一致性）："></a>Consistency（一致性）：</h4><p>只有合法的数据可以被写入数据库，否则事务应该将其回滚到最初状态。</p>
+<h4 id="Isolation（隔离性）："><a href="#Isolation（隔离性）：" class="headerlink" title="Isolation（隔离性）："></a>Isolation（隔离性）：</h4><p>事务允许多个用户对同一个数据进行并发访问，而不破坏数据的正确性和完整性。同时，并行事务的修改必须与其他并行事务的修改相互独立。这表明事务必须是独立的，不应该以任何方式以来于或影响其他事务。</p>
+<h4 id="Durability（持久性）："><a href="#Durability（持久性）：" class="headerlink" title="Durability（持久性）："></a>Durability（持久性）：</h4><p>事务结束后，事务处理的结果必须能够得到固化。事务完成之后，它对于系统的影响是永久的，该修改即使出现系统故障也将一直保留，真实的修改了数据库。</p>
+<p>如果多个事务同时影响同一条或者同一些数据，将会导致数据混乱或者事务执行失败，因此需要对事务的并发进行控制。隔离级别就是对对事务并发控制的等级。<code>SQL-92</code>标准中定义了四个隔离级别，串行化（<code>SERIALIZABLE</code>）、可重复读（<code>REPEATABLE READ</code>）、读已提交（<code>READ COMMITED</code>）、读未提交（<code>READ UNCOMMITED</code>）：</p>
+<p>√ 表示可能发生，× 表示不会发生</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read uncommitted</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Read committed</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Repeatable read</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Serializable</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+</tbody>
+</table>
+<p>假如有两个事务A和B都在对同一个数据库进行操作：</p>
+<ol>
+<li><p>如果数据库隔离级别设为Read uncommitted，事务A先操作数据库， 修改了一条数据， 但未提交事务，此时事务B读数据库，则会读取到事务A未提交的脏数据，即为<strong>脏读</strong>；</p>
+</li>
+<li><p>如果数据库隔离级别设为Read committed， 事务A先操作数据库，读取数据data_a，然后事务B讲数据库中对应的数据修改为data_b并提交事务，此时事务A再去读同一条数据，则数据变为data_b，即<strong>不可重复读</strong>；</p>
+</li>
+<li><p>如果数据库隔离级别设为Repeatable read， 事务A先读取某一条件下的一些数据， 然后事务B插入一条数据并提交，而这条数据又恰好满足事务A的select条件，此时事务A再去数据库查询该条件下的数据，发现比上一次多了一条，好像出现幻觉一般，称为<strong>幻读</strong>；</p>
+</li>
+<li><p>如果数据库隔离级别设为Serializable，则所有事务都是排着队一条一条执行的，只有上一条事务执行完毕才会开始下一条事务，因而脏读、不可重复读、幻读这些情况都不可能出现。</p>
+</li>
+</ol>
+<p>不可重复读与幻读的区别是，不可重复读是因为修改了数据而造成的数据不一致，幻读是因为插入数据造成的数据不一致。<br><strong>SQL Server 和Oracle默认的隔离级别是Read committed</strong><br><strong>MySQL数据库默认的隔离级别是Repeatable read</strong></p>
+<h2 id="数据库锁"><a href="#数据库锁" class="headerlink" title="数据库锁"></a>数据库锁</h2><p>数据库系统本身的锁机制 ：</p>
+<h3 id="共享锁-Shared-Lock-S锁允许多个事务同时对同一数据进行读操作，但是不允许修改数据（与X锁冲突）。"><a href="#共享锁-Shared-Lock-S锁允许多个事务同时对同一数据进行读操作，但是不允许修改数据（与X锁冲突）。" class="headerlink" title="共享锁(Shared Lock) S锁允许多个事务同时对同一数据进行读操作，但是不允许修改数据（与X锁冲突）。"></a>共享锁(Shared Lock) S锁允许多个事务同时对同一数据进行读操作，但是不允许修改数据（与X锁冲突）。</h3><h3 id="更新锁-Update-Lock-更新所也称修改锁，事务在更新某一项数据时需要加U锁，读取该数据项，此时允许其他事务在该项上加S锁，待事务读出并修改后，将U锁升级为X锁，然后写入修改后的数据。"><a href="#更新锁-Update-Lock-更新所也称修改锁，事务在更新某一项数据时需要加U锁，读取该数据项，此时允许其他事务在该项上加S锁，待事务读出并修改后，将U锁升级为X锁，然后写入修改后的数据。" class="headerlink" title="更新锁(Update Lock) 更新所也称修改锁，事务在更新某一项数据时需要加U锁，读取该数据项，此时允许其他事务在该项上加S锁，待事务读出并修改后，将U锁升级为X锁，然后写入修改后的数据。"></a>更新锁(Update Lock) 更新所也称修改锁，事务在更新某一项数据时需要加U锁，读取该数据项，此时允许其他事务在该项上加S锁，待事务读出并修改后，将U锁升级为X锁，然后写入修改后的数据。</h3><h3 id="排他锁-Exclusive-Lock"><a href="#排他锁-Exclusive-Lock" class="headerlink" title="排他锁(Exclusive Lock)"></a>排他锁(Exclusive Lock)</h3><p>排他锁是独占锁，一般修改数据时使用，select…for update</p>
+<h3 id="意向锁-Intent-Lock"><a href="#意向锁-Intent-Lock" class="headerlink" title="意向锁(Intent Lock)"></a>意向锁(Intent Lock)</h3><p>意向锁是表级锁，说明在资源底层获得共享锁或独占锁的意向。例如，当读取表里的页面时，在请求页共享锁（S锁）之前，事务在表级请求共享意向锁。这样可以防止其他事务随后在表上获取排他锁（X锁），修改整个表格。意向锁可以提高性能，因为数据库引擎仅在表级检查意向锁，确定事务是否能安全地获取该表上的锁，而不需要检查表中的每行或每页上的锁以确定事务是否可以锁定整个表。意向锁有两种用途：防止其他事务以会使较低级别的锁无效的方式修改较高级别资源；提高数据库引擎在较高的粒度级别检测锁冲突的效率。</p>
+<h3 id="意向共享锁（IS）"><a href="#意向共享锁（IS）" class="headerlink" title="意向共享锁（IS）"></a>意向共享锁（IS）</h3><p>表示事务准备给数据行加入共享锁，也就是说一个数据行加共享锁前必须先取得该表的IS锁</p>
+<h3 id="意向排他锁（IX）"><a href="#意向排他锁（IX）" class="headerlink" title="意向排他锁（IX）"></a>意向排他锁（IX）</h3><p>类似上面，表示事务准备给数据行加入排他锁，说明事务在一个数据行加排他锁前必须先取得该表的IX锁。</p>
+<p>各种锁的兼容性如下：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>意向共享(IS)</th>
+<th>共享(S)</th>
+<th>更新(U)</th>
+<th>意向排他(IX)</th>
+<th>排他(X)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>意向共享(IS)</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>共享(S)</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>更新(U)</td>
+<td>是</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>意向排他(IX)</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>排他(X)</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h3 id="模式锁-Schema-Lock"><a href="#模式锁-Schema-Lock" class="headerlink" title="模式锁(Schema Lock)"></a>模式锁(Schema Lock)</h3><p>Altert table，改变表结构时使用</p>
+<h3 id="批量更新锁（Bulk-Update-Lock）"><a href="#批量更新锁（Bulk-Update-Lock）" class="headerlink" title="批量更新锁（Bulk Update Lock）"></a>批量更新锁（Bulk Update Lock）</h3><p>数据库备份恢复</p>
+<p><strong><em>业务级别上的锁机制，<code>hibernate</code>支持有以下两种类型的锁</em></strong></p>
+<p><strong>悲观锁：</strong></p>
+<p>对数据被外界修改持保守态度，即认为经常会发生不止一个事务修改同一条数据的情况，因此所有事务对数据修改前都要获取一把锁，用来排斥其他事务对该数据的操作。悲观锁的实现，往往依靠数据库提供的锁机制（也只有数据库层提供的锁机制才能 真正保证数据访问的排他性，否则，即使在本系统中实现了加锁机制，也无法保证外部系 统不会修改数据）。如 <code>select * form user where id=#{id} for update</code>;语句，就会使数据库系统锁定该条记录。</p>
+<p><strong>乐观锁：</strong></p>
+<p>乐观锁认为多个事务并发修改数据库同一条记录这样的情况是不经常发生的，对事务操作加锁也是非必须的，即对此事持乐观态度。但是同样要保证数据的一致性，乐观锁要使用一个标志位来标示是否存在其他事务同时在操作该条数据，这样的标志位大多是基于数据版本（<code>Version</code>）记录机制实现的。</p>
+<p><strong>锁的分类(oracle)</strong></p>
+<ol>
+<li>按操作划分，可分为DML锁、DDL锁</li>
+<li>按锁的粒度划分，可分为表级锁、行级锁、页级锁（mysql）</li>
+<li>按锁级别划分，可分为共享锁、排他锁</li>
+<li>按加锁方式划分，可分为自动锁、显示锁</li>
+<li>按使用方式划分，可分为乐观锁、悲观锁</li>
+</ol>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="视图（View）"><a href="#视图（View）" class="headerlink" title="视图（View）"></a>视图（View）</h3><p>数据库视图是一张虚表，逻辑上的表，有时为了区别视图和表，也称表为基本表——Base Table。视图所对应的数据不进行实际存储，不占用物理空间。视图掩码数据库的复杂性，视图把数据库设计的复杂性与用户屏蔽分开，也能起到用户程序与实际数据库表结构解耦的作用。</p>
+<h3 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h3><p>存储过程是 <code>SQL</code> 语句和可选控制流语句的预编译集合，以一个名称存储并作为一个单元处理。存储过程存储在数据库内，可由应用程序通过一个调用执行，而且允许用户声明变量、有条件执行以及其它强大的编程功能。</p>
+<p>存储过程与函数的区别：</p>
+<ol>
+<li>一般情况下，函数实现的功能针对性比较强而存储过程实现的功能要复杂一点。</li>
+<li>存储过程来说可以返回参数，而函数只能返回值或者表对象。</li>
+<li>一般将存储过程作为一个独立的部分来执行，而把函数作为查询语句的一个部分来调用，由于函数可以返回一个表对象，因此它可以出现在查询语句FROM关键字的后面。</li>
+</ol>
+<h3 id="触发器"><a href="#触发器" class="headerlink" title="触发器"></a>触发器</h3><p>触发器和存储过程一样，也是一段sql程序。不同的是存储过程通过名字直接调用，而触发器则相当于事件监听器，在某个特定的事件发生时由数据库系统自动调用的。</p>
+<p>触发器语法：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">trigger</span> 触发器的名字 <span class="keyword">on</span> 操作表</div><div class="line">befor|<span class="keyword">after</span> instead <span class="keyword">of</span></div><div class="line"><span class="keyword">update</span>|<span class="keyword">insert</span>|<span class="keyword">delete</span></div><div class="line"><span class="keyword">as</span></div><div class="line"><span class="keyword">SQL</span>语句</div></pre></td></tr></table></figure></p>
+<p>在<code>mysql</code>的<code>innoDB</code>引擎下（该引擎下表为事务表），触发器和引起触发器执行的<code>Sql</code>语句具有事务性，如果<code>before</code>类型的触发器执行失败则<code>sql</code>语句不执行，如果<code>sql</code>语句执行失败则<code>after</code>触发器不执行，如果<code>after</code>触发器执行失败则引起触发器执行的<code>sql</code>语句回滚。</p>
+<h3 id="游标"><a href="#游标" class="headerlink" title="游标"></a>游标</h3><p>游标是一个数据缓冲器，也就是一个内存区域，用来暂时存放受SQL语句影响到的数据。即受影响的数据暂时存放在一张虚表中，这个虚表就是游标。</p>
+<p>Orale中游标的类型：</p>
+<ol>
+<li><p>隐式游标：在 PL/SQL 程序中执行DML SQL<br>语句时自动创建隐式游标，名字固定叫sql。数据库中的事物可以回滚，而游标在其中起着非常重要的作用，由于对数据库的操作我们会暂时放在游标中，只要不提交，我们就可以根据游标中内容进行回滚，在一定意义有利于数据库的安全。</p>
+</li>
+<li><p>显式游标：用于从表中取出多行数据,并将多行数据一行一行的单独进行处理.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">declare</span></div><div class="line"><span class="comment">--1, 声明游标</span></div><div class="line"><span class="keyword">cursor</span> cur <span class="keyword">is</span></div><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span>;</div><div class="line"><span class="keyword">begin</span></div><div class="line"><span class="comment">--2, 直接使用，Oracle会自动打开和关闭等操作。</span></div><div class="line"><span class="keyword">for</span> v_user <span class="keyword">in</span> cur <span class="keyword">loop</span></div><div class="line">dbms_output.put_line(v_user.userName);</div><div class="line"><span class="keyword">end</span> <span class="keyword">loop</span></div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure>
+<p>　</p>
+</li>
+</ol>
+
+      
+    </div>
+	
+	<div>
+	  
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+	
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>支持一杯可乐吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/weixin.png" alt="兆峰 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/alipay.png" alt="兆峰 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      兆峰
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengzhaofeng.net/2017/关系型数据库知识点小结.html" title="关系型数据库知识小结">http://fengzhaofeng.net/2017/关系型数据库知识点小结.html</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+          
+            <a href="/tags/数据库/" rel="tag"><i class="fa fa-tag"></i> 数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/next主题配置记录.html" rel="next" title="next主题配置">
+                <i class="fa fa-chevron-left"></i> next主题配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/Spring常用配置示例说明 .html" rel="prev" title="Spring常用配置示例">
+                Spring常用配置示例 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/author.jpg"
+               alt="兆峰" />
+          <p class="site-author-name" itemprop="name">兆峰</p>
+           
+              <p class="site-description motion-element" itemprop="description">兆峰的博客</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zffenger" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/zffenger" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              推荐
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.54tianzhisheng.cn/" title="田志声" target="_blank">田志声</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://siberiawolf.com/free_programming/index.html" title="编程书籍" target="_blank">编程书籍</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础术语"><span class="nav-number">1.</span> <span class="nav-text">基础术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库三范式"><span class="nav-number">2.</span> <span class="nav-text">数据库三范式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一范式（1NF）：属性不可分"><span class="nav-number">2.1.</span> <span class="nav-text">第一范式（1NF）：属性不可分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二范式（2NF）：非主属性完全依赖于码"><span class="nav-number">2.2.</span> <span class="nav-text">第二范式（2NF）：非主属性完全依赖于码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三范式（3NF）：非主属性之间不存在传递依赖"><span class="nav-number">2.3.</span> <span class="nav-text">第三范式（3NF）：非主属性之间不存在传递依赖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务："><span class="nav-number">3.</span> <span class="nav-text">事务：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务具有四个基本特征（ACID）："><span class="nav-number">3.1.</span> <span class="nav-text">事务具有四个基本特征（ACID）：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Atomic（原子性）："><span class="nav-number">3.1.1.</span> <span class="nav-text">Atomic（原子性）：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Consistency（一致性）："><span class="nav-number">3.1.2.</span> <span class="nav-text">Consistency（一致性）：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Isolation（隔离性）："><span class="nav-number">3.1.3.</span> <span class="nav-text">Isolation（隔离性）：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Durability（持久性）："><span class="nav-number">3.1.4.</span> <span class="nav-text">Durability（持久性）：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库锁"><span class="nav-number">4.</span> <span class="nav-text">数据库锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享锁-Shared-Lock-S锁允许多个事务同时对同一数据进行读操作，但是不允许修改数据（与X锁冲突）。"><span class="nav-number">4.1.</span> <span class="nav-text">共享锁(Shared Lock) S锁允许多个事务同时对同一数据进行读操作，但是不允许修改数据（与X锁冲突）。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新锁-Update-Lock-更新所也称修改锁，事务在更新某一项数据时需要加U锁，读取该数据项，此时允许其他事务在该项上加S锁，待事务读出并修改后，将U锁升级为X锁，然后写入修改后的数据。"><span class="nav-number">4.2.</span> <span class="nav-text">更新锁(Update Lock) 更新所也称修改锁，事务在更新某一项数据时需要加U锁，读取该数据项，此时允许其他事务在该项上加S锁，待事务读出并修改后，将U锁升级为X锁，然后写入修改后的数据。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排他锁-Exclusive-Lock"><span class="nav-number">4.3.</span> <span class="nav-text">排他锁(Exclusive Lock)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#意向锁-Intent-Lock"><span class="nav-number">4.4.</span> <span class="nav-text">意向锁(Intent Lock)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#意向共享锁（IS）"><span class="nav-number">4.5.</span> <span class="nav-text">意向共享锁（IS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#意向排他锁（IX）"><span class="nav-number">4.6.</span> <span class="nav-text">意向排他锁（IX）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式锁-Schema-Lock"><span class="nav-number">4.7.</span> <span class="nav-text">模式锁(Schema Lock)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批量更新锁（Bulk-Update-Lock）"><span class="nav-number">4.8.</span> <span class="nav-text">批量更新锁（Bulk Update Lock）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#视图（View）"><span class="nav-number">5.1.</span> <span class="nav-text">视图（View）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储过程"><span class="nav-number">5.2.</span> <span class="nav-text">存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#触发器"><span class="nav-number">5.3.</span> <span class="nav-text">触发器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#游标"><span class="nav-number">5.4.</span> <span class="nav-text">游标</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">兆峰</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt9iedwP';
+      var conf = '3b3713fc7156afdd18b6abd322e1f0e3';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+	<!-- 页面点击小红心 -->
+	<script type="text/javascript" src="/js/src/love.js"></script>
+	<!-- 宠物 -->
+	
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -20px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/z16/z16.model.json")</script>
+  
+</body>
+</html>

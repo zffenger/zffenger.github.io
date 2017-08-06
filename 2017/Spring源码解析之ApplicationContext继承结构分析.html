@@ -1,0 +1,1287 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spring,Spring源码解析,源码解析," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="【原创文章，转载请注明出处】 在使用Spring的时候，我们经常需要先得到一个ApplicationContext对象，然后从该对象中获取我们配置的Bean对象。ApplicationContext隶属于org.springframework.context，是SpringFramework中Bean的管理者，为SpringFramework的诸多功能提供支撑作用。 下图是Spring-4.3.2">
+<meta name="keywords" content="Spring,Spring源码解析,源码解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring源码解析之ApplicationContext继承结构分析">
+<meta property="og:url" content="http://fengzhaofeng.net/2017/Spring源码解析之ApplicationContext继承结构分析.html">
+<meta property="og:site_name" content="兆峰的博客">
+<meta property="og:description" content="【原创文章，转载请注明出处】 在使用Spring的时候，我们经常需要先得到一个ApplicationContext对象，然后从该对象中获取我们配置的Bean对象。ApplicationContext隶属于org.springframework.context，是SpringFramework中Bean的管理者，为SpringFramework的诸多功能提供支撑作用。 下图是Spring-4.3.2">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/JgGBJ41Aih.png?imageslim">
+<meta property="og:updated_time" content="2017-08-05T15:25:30.778Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring源码解析之ApplicationContext继承结构分析">
+<meta name="twitter:description" content="【原创文章，转载请注明出处】 在使用Spring的时候，我们经常需要先得到一个ApplicationContext对象，然后从该对象中获取我们配置的Bean对象。ApplicationContext隶属于org.springframework.context，是SpringFramework中Bean的管理者，为SpringFramework的诸多功能提供支撑作用。 下图是Spring-4.3.2">
+<meta name="twitter:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/JgGBJ41Aih.png?imageslim">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":true,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fengzhaofeng.net/2017/Spring源码解析之ApplicationContext继承结构分析.html"/>
+
+
+
+
+
+  <title>Spring源码解析之ApplicationContext继承结构分析 | 兆峰的博客</title>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63288986";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">兆峰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不忘初心</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://fengzhaofeng.net/2017/Spring源码解析之ApplicationContext继承结构分析.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="兆峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/author.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="兆峰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring源码解析之ApplicationContext继承结构分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-05T23:00:00+08:00">
+                2017-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/Spring源码解析之ApplicationContext继承结构分析.html#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/Spring源码解析之ApplicationContext继承结构分析.html" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>【原创文章，转载请注明出处】</p>
+<p>在使用<code>Spring</code>的时候，我们经常需要先得到一个<code>ApplicationContext</code>对象，然后从该对象中获取我们配置的<code>Bean</code>对象。<code>ApplicationContext</code>隶属于<code>org.springframework.context</code>，是<code>SpringFramework</code>中<code>Bean</code>的管理者，为<code>SpringFramework</code>的诸多功能提供支撑作用。</p>
+<p>下图是Spring-4.3.2.RELEASE版本中<code>ApplicationContext</code>相关的UML类视图（浅绿色的为接口，浅黄色的为类）：</p>
+<p><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170804/JgGBJ41Aih.png?imageslim" alt="ApplicationContext"></p>
+<h2 id="BeanFactory系列接口："><a href="#BeanFactory系列接口：" class="headerlink" title="BeanFactory系列接口："></a>BeanFactory系列接口：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BeanFactory</span></span></div></pre></td></tr></table></figure>
+<p><code>BeanFactory</code> 是 <code>Spring</code> 管理 Bean 的最顶层接口，是一个 Bean 容器, 管理一系列的 bean，每一个 bean 使用一个String 类型的 name(或称之为id) 来唯一确定，这些 <code>Bean</code> 可以是 <code>prototype</code> 的或者 <code>singleton</code>的 。Spring 提倡使用依赖注入(Dependency Injection) 的方式装配 Bean。<code>BeanFactory</code>从 <code>configuration source</code> 加载Bean的定义，<code>configuration source</code> 可以是xml文件或者properties文件甚至是数据库。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">HierarchicalBeanFactory</span> <span class="keyword">extends</span> <span class="title">BeanFactory</span></span></div></pre></td></tr></table></figure></p>
+<p><code>BeanFactory</code>的子接口<code>HierarchicalBeanFactory</code>是一个具有层级关系的Bean 工厂，拥有属性<code>parentBeanFactory</code>。当获取 Bean对象时，如果当前<code>BeanFactory</code>中不存在对应的<code>bean</code>，则会访问其直接<code>parentBeanFactory</code> 以尝试获取bean 对象。此外，还可以在当前的 <code>BeanFactory</code> 中 <code>override</code> 父级<code>BeanFactory</code>的同名<code>bean</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ListableBeanFactory</span> <span class="keyword">extends</span> <span class="title">BeanFactory</span></span></div></pre></td></tr></table></figure></p>
+<p><code>ListableBeanFactory</code>  继承了 <code>BeanFactory</code>， 实现了枚举方法可以列举出当前<code>BeanFactory</code>中所有的bean对象而不必根据name一个一个的获取。 如果 <code>ListableBeanFactory</code> 对象同时还是一个<code>HierarchicalBeanFactory</code>则<code>getBeanDefinitionNames()</code>方法只会返回当前<code>BeanFactory</code>中的Bean对象而不会去父级<code>BeanFactory</code>中查询。</p>
+<h2 id="其他接口："><a href="#其他接口：" class="headerlink" title="其他接口："></a>其他接口：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">PropertyResolver</span></span></div></pre></td></tr></table></figure>
+<p>配置文件解析器的最顶级接口，解析配置文件获取属性值等作用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Environment</span> <span class="keyword">extends</span> <span class="title">PropertyResolver</span></span></div></pre></td></tr></table></figure></p>
+<p>提供当前<code>Application</code>运行的所需环境<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EnvironmentCapable</span></span></div></pre></td></tr></table></figure></p>
+<p>这是一个<code>Environment Holder</code>，只有一个方法：<code>Environment getEnvironment()</code> 用来获取<code>Environment</code>对象<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationEventPublisher</span></span></div></pre></td></tr></table></figure></p>
+<p>该接口的功能是<code>publish Event</code>，向事件监听器（Listener）发送事件消息<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MessageSource</span></span></div></pre></td></tr></table></figure></p>
+<p>解析message的策略接口，方法形如: <code>String getMessage(String, Object[], String, Locale)</code>，用于支撑国际化等功能<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ResourcePatternResolver</span> <span class="keyword">extends</span> <span class="title">ResourceLoader</span></span></div></pre></td></tr></table></figure></p>
+<p>其中<code>ResourceLoader</code>用于从一个源（如<code>InputStream</code>等）加载资源文件，<code>ResourcePatternResolver</code> 是<code>ResourceLoader</code>的子类，根据<code>path-pattern</code> 加载资源。</p>
+<h2 id="ApplicationContext接口："><a href="#ApplicationContext接口：" class="headerlink" title="ApplicationContext接口："></a>ApplicationContext接口：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationContext</span> <span class="keyword">extends</span> <span class="title">EnvironmentCapable</span>, <span class="title">ListableBeanFactory</span>, <span class="title">HierarchicalBeanFactory</span>, <span class="title">MessageSource</span>, <span class="title">ApplicationEventPublisher</span>, <span class="title">ResourcePatternResolver</span></span></div></pre></td></tr></table></figure>
+<p>重点来了，<code>ApplicationContext</code>接口继承众多接口，集众多接口功能与一身，为<code>Spring</code>的运行提供基本的功能支撑。<strong>根据程序设计的“单一职责原则”，其实每个较顶层接口都是“单一职责的”，只提供某一方面的功能，而<code>ApplicationContext</code>接口继承了众多接口，相当于拥有了众多接口的功能</strong>，下面看看它的主要功能：</p>
+<ul>
+<li>首先，它是个<code>BeanFactory</code>，可以管理、装配bean，可以有父级BeanFactory实现Bean的层级管理（具体到这里来说它可以有父级的<code>ApplicationContext</code>，因为<code>ApplicationContext</code>本身就是一个<code>BeanFactory</code>。这在web项目中很有用，可以使每个Servlet具有其独立的context,所有<code>Servlet</code>共享一个父级的<code>context</code>），它还是<code>Listable</code>的，可以枚举出所管理的bean对象。</li>
+<li>其次，它是一个<code>ResourceLoader</code>，可以加载资源文件；</li>
+<li>再次，它可以管理一些<code>Message</code>实现国际化等功能；</li>
+<li>还有，它可以发布事件给注册的<code>Listener</code>，实现监听机制。</li>
+</ul>
+<h2 id="ApplicationContext-的子接口："><a href="#ApplicationContext-的子接口：" class="headerlink" title="ApplicationContext 的子接口："></a>ApplicationContext 的子接口：</h2><p><code>ApplicationContext</code> 接口具有两个直接子接口，分别是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">org.springframework.context.ConfigurableApplicationContext</div><div class="line">org.springframework.web.context.WebApplicationContext</div></pre></td></tr></table></figure>
+<p>分别看这两个子接口:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConfigurableApplicationContext</span> <span class="keyword">extends</span> <span class="title">ApplicationContext</span>, <span class="title">Lifecycle</span>, <span class="title">Closeable</span></span></div></pre></td></tr></table></figure>
+<p>根据接口名可以判决，该接口是可配置的！<code>ApplicationContext</code> 接口本身是 <code>read-only</code> 的，所以子接口 <code>ConfigurableApplicationContext</code> 就提供了如<code>setID()、setParent()、setEnvironment()</code>等方法，用来配置<code>ApplicationContext</code>。</p>
+<p>再看其继承的另外两个接口：</p>
+<ul>
+<li>Lifecycle：Lifecycle接口中具有start()、stop()等方法，用于对context生命周期的管理；</li>
+<li>Closeable：Closeable是标准JDK所提供的一个接口，用于最后关闭组件释放资源等；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WebApplicationContext</span> <span class="keyword">extends</span> <span class="title">ApplicationContext</span></span></div></pre></td></tr></table></figure>
+<p>该接口仅仅在原接口基础上提供了<code>getServletContext()</code>，用于给<code>servlet</code>提供上下文信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConfigurableWebApplicationContext</span> <span class="keyword">extends</span> <span class="title">WebApplicationContext</span>, <span class="title">ConfigurableApplicationContext</span></span></div></pre></td></tr></table></figure>
+<p>这里 <code>ConfigurableWebApplicationContext</code> 又将上述两个接口结合起来，提供了一个可配置、可管理、可关闭的<code>WebApplicationContext</code>，同时该接口还增加了<code>setServletContext()</code>，<code>setServletConfig()</code>等set方法，用于装配<code>WebApplicationContext</code>。</p>
+<p><strong>到这里<code>ApplicationContext</code>相关接口基本上已经讲完了，总结起来就两大接口：</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">org.springframework.context.ConfigurableApplicationContext</div><div class="line">org.springframework.web.context.ConfigurableWebApplicationContext</div></pre></td></tr></table></figure></p>
+<p>对于普通应用，使用<code>ConfigurableApplicationContext</code> 接口的实现类作为<code>bean</code>的管理者，对于<code>web</code>应用，使用<code>ConfigurableWebApplicationContext</code> 接口的实现类作为bean的管理者。<strong>这两个接口，从结构上讲他们是继承关系，从应用上讲他们是平级关系，在不同的领域为Spring提供强大的支撑。</strong>  </p>
+<h2 id="ApplicationContext相关实现类设计："><a href="#ApplicationContext相关实现类设计：" class="headerlink" title="ApplicationContext相关实现类设计："></a>ApplicationContext相关实现类设计：</h2><p><code>Spring</code>是一个优秀的框架，具有良好的结构设计和接口抽象，它的每一个接口都是其功能具体到各个模块中的高度抽象，实际使用过程中相当于把接口的各个实现类按照接口所提供的组织架构装配起来以提供完整的服务，可以说掌握了<code>Spring</code>的接口就相当于掌握了<code>Spring</code>的大部分功能。</p>
+<p><code>ApplicationContext</code> 的实现类众多，上文中分析了 <code>ApplicationContext</code> 接口的各个功能，下面将分析 <code>ApplicationContext</code> 的实现类对上述接口的各个功能都是怎样实现的（<em>PS. 限于篇幅，这里仅仅指出上述各个功能在实现类中什么位置通过什么方法实现，至于其具体实现过程，每一个功能拿出来都可以单独写一篇文章了，这里不进行详述</em>）。<br>至于实现类又扩展了其他接口或者继承了其他父类，这些只是实现类为了扩展功能或者为了对实现上述接口提供便利而做的事情，对<code>ApplicationContext</code>接口抽象出来的功能没有影响或者没有太大帮助，因此略去。</p>
+<p>以<code>ClassPathXmlApplicationContext</code>为例，其主要继承关系如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">org.springframework.context.support.AbstractApplicationContext</div><div class="line">    org.springframework.context.support.AbstractRefreshableApplicationContext          org.springframework.context.support.AbstractRefreshableConfigApplicationContext</div><div class="line">            org.springframework.context.support.AbstractXmlApplicationContext                   org.springframework.context.support.ClassPathXmlApplicationContext</div></pre></td></tr></table></figure>
+<p>而最顶层抽象类 <code>AbstractApplicationContext</code> 又实现了 <code>ConfigurableApplicationContext</code> 接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext, DisposableBean</div></pre></td></tr></table></figure></p>
+<p>根据上文所述，这里略去其父类 <code>DefaultResourceLoader</code> 和接口 <code>DisposableBean</code> ，只关注接口 <code>ConfigurableApplicationContext</code>，回忆一下该的主要功能：</p>
+<ul>
+<li><code>Configable</code>, //可配置（该接口本身扩展的功能）</li>
+<li><code>Lifecycle</code>, //生命周期可管理</li>
+<li><code>Closeable</code>，//可关闭（释放资源）</li>
+<li><code>EnvironmentCapable</code>，//可配置Environment</li>
+<li><code>MessageSource</code>, //可管理message实现国际化等功能</li>
+<li><code>ApplicationEventPublisher</code>, //可publish事件，调用Listener</li>
+<li><code>ResourcePatternResolver</code>，//加载pattern指定的资源</li>
+<li><code>ListableBeanFactory</code>, <code>HierarchicalBeanFactory</code>, //管理Bean的生命周期，这个最重要，放最后说</li>
+</ul>
+<p>然后回到最顶层抽象类 <code>AbstractApplicationContext</code> ，该抽象类可以说是 <code>ClassPathXmlApplicationContext</code> 继承结构中代码量最多的类， 上述的大部分功能也都在该类中实现。该类采用模板方法模式，实现了上述功能的大部分逻辑，然后又抽出许多<code>protected</code>方法（或 <code>abstract</code>方法）供子类<code>override</code> 。</p>
+<p><strong><em>各功能的实现列举如下</em></strong>：</p>
+<p><strong><code>Configable</code></strong>：如<code>setParent/setEnvironment</code>等方法，由<code>AbstractApplicationContext</code>实现 。代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setParent</span><span class="params">(ApplicationContext parent)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.parent = parent;</div><div class="line">    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</div><div class="line">        Environment parentEnvironment = parent.getEnvironment();</div><div class="line">        <span class="keyword">if</span> (parentEnvironment <span class="keyword">instanceof</span> ConfigurableEnvironment) &#123;</div><div class="line">            getEnvironment().merge((ConfigurableEnvironment) parentEnvironment);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong><code>Lifecycle</code></strong>：<code>AbstractApplicationContext</code>拥有一个<code>LifecycleProcessor</code>实例，用于管理自身的生命周期，<code>AbstractApplicationContext</code>的<code>Lifecycle</code>方法如<code>start</code>、<code>stop</code>等由会代理给<code>LifecycleProcessor</code>进行处理，代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">    getLifecycleProcessor().start();</div><div class="line">    publishEvent(<span class="keyword">new</span> ContextStartedEvent(<span class="keyword">this</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>Closeable</code></strong>：由<code>AbstractApplicationContext</code>实现，用于关闭<code>ApplicationContext</code>销毁所有<code>beans</code>，此外如果注册有<code>JVM shutdown hook</code>，同样要将其移除 。代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.startupShutdownMonitor) &#123;</div><div class="line">        doClose();            </div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.shutdownHook != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                Runtime.getRuntime().removeShutdownHook(<span class="keyword">this</span>.shutdownHook);</div><div class="line">            &#125;<span class="keyword">catch</span> (IllegalStateException ex) &#123;</div><div class="line">                <span class="comment">// ignore - VM is already shutting down</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>EnvironmentCapable</code></strong>：由<code>AbstractApplicationContext</code>实现，其持有一个<code>ConfigurableEnvironment</code>实例，用来实现<code>EnvironmentCapable</code>接口的<code>getEnvironment</code>方法 。代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> ConfigurableEnvironment <span class="title">getEnvironment</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.environment == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">this</span>.environment = createEnvironment();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.environment;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>MessageSource</code></strong>：<code>AbstractApplicationContex</code>t持有一个<code>MessageSource</code>实例，将<code>MessageSource</code>接口的方法代理给该实例来完成 。代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getMessage</span><span class="params">(String code, Object args[], String defaultMessage, Locale locale)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> getMessageSource().getMessage(code, args, defaultMessage, locale);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>ApplicationEventPublisher</code></strong>：由<code>AbstractApplicationContext</code>实现，如果存在父级<code>ApplicationContext</code>，则同样要将<code>event</code>发布给父级<code>ApplicationContext</code>。代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">publishEvent</span><span class="params">(ApplicationEvent event)</span> </span>&#123;</div><div class="line">    Assert.notNull(event, <span class="string">"Event must not be null"</span>);</div><div class="line">    <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</div><div class="line">        logger.trace(<span class="string">"Publishing event in "</span> + getDisplayName() + <span class="string">": "</span> + event);</div><div class="line">    &#125;</div><div class="line">    getApplicationEventMulticaster().multicastEvent(event);</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.parent != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">this</span>.parent.publishEvent(event);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>ResourcePatternResolver</code></strong>：<code>AbstractApplicationContext</code>持有一个<code>ResourcePatternResolver</code>实例，该接口的方法代理给该实例完成 。代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> Resource[] getResources(String locationPattern) <span class="keyword">throws</span> IOException &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.resourcePatternResolver.getResources(locationPattern);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>ListableBeanFactory, HierarchicalBeanFactory</code></strong>： <code>AbstractApplicationContext</code> 间接实现了这两个接口， 然而却并没有实现任何<code>BeanFactory</code>的任何功能。<code>AbstractApplicationContext</code> 拥有一个 <code>ConfigurableListableBeanFactory</code>实例，所有<code>BeanFactory</code>的功能都代理给该实例完成。代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getBean</span><span class="params">(String name)</span> <span class="keyword">throws</span> BeansException </span>&#123;</div><div class="line">    assertBeanFactoryActive();</div><div class="line">    <span class="keyword">return</span> getBeanFactory().getBean(name);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>而<code>AbstractApplicationContext</code> 的<code>getBeanFactory()</code> 方法是一个抽象方法，即由子类来提供这个<code>BeanFactory</code>。代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ConfigurableListableBeanFactory <span class="title">getBeanFactory</span><span class="params">()</span> <span class="keyword">throws</span> IllegalStateException</span>;</div></pre></td></tr></table></figure></p>
+<p>在 <code>ClassPathXmlApplicationContext</code> 的继承体系中， 类<code>AbstractRefreshableApplicationContext</code>实现了这个 <code>getBeanFactory()</code>方法。这里<code>getBeanFactory()</code>方法会创建一个<code>DefaultListableBeanFactory</code>实例作为返回值。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文以 <code>Spring Framework</code> 的 <code>ApplicationContext</code> 为中心，分析了 <code>ApplicationContext</code> 的机构体系和功能实现。接口 <code>ApplicationContext</code> 继承了众多接口，可以满足应用中“面向接口编程”的常用功能需求。抽象类 <code>AbstractApplicationContext</code> 实现了<code>ApplicationContext</code> 接口中简单不易变动的部分，然后通过“组合”将众多“容易变动”功能代理给它的一些成员变量来实现，最后再使用模板方法模式让子类为父类提供一些函数的支持或者设置替换父类的上述成员变量，从而实现了“对扩展开放，对修改封闭”的设计原则，为<code>Spring Framework</code> 提供了灵活性大可扩展性强的架构支撑。</p>
+<p>【原创文章，转载请注明出处】</p>
+
+      
+    </div>
+	
+	<div>
+	  
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+	
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>支持一杯可乐吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/weixin.png" alt="兆峰 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/alipay.png" alt="兆峰 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      兆峰
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengzhaofeng.net/2017/Spring源码解析之ApplicationContext继承结构分析.html" title="Spring源码解析之ApplicationContext继承结构分析">http://fengzhaofeng.net/2017/Spring源码解析之ApplicationContext继承结构分析.html</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+          
+            <a href="/tags/Spring源码解析/" rel="tag"><i class="fa fa-tag"></i> Spring源码解析</a>
+          
+            <a href="/tags/源码解析/" rel="tag"><i class="fa fa-tag"></i> 源码解析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/计算机中的各种字符集编码详解.html" rel="next" title="计算机中的各种字符集编码">
+                <i class="fa fa-chevron-left"></i> 计算机中的各种字符集编码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/Java内存模型知识点小结.html" rel="prev" title="Java内存模型知识点小结---《深入理解Java内存模型》（程晓明）读书总结">
+                Java内存模型知识点小结---《深入理解Java内存模型》（程晓明）读书总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/author.jpg"
+               alt="兆峰" />
+          <p class="site-author-name" itemprop="name">兆峰</p>
+           
+              <p class="site-description motion-element" itemprop="description">兆峰的博客</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zffenger" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/zffenger" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              推荐
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.54tianzhisheng.cn/" title="田志声" target="_blank">田志声</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://siberiawolf.com/free_programming/index.html" title="编程书籍" target="_blank">编程书籍</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BeanFactory系列接口："><span class="nav-number">1.</span> <span class="nav-text">BeanFactory系列接口：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他接口："><span class="nav-number">2.</span> <span class="nav-text">其他接口：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ApplicationContext接口："><span class="nav-number">3.</span> <span class="nav-text">ApplicationContext接口：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ApplicationContext-的子接口："><span class="nav-number">4.</span> <span class="nav-text">ApplicationContext 的子接口：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ApplicationContext相关实现类设计："><span class="nav-number">5.</span> <span class="nav-text">ApplicationContext相关实现类设计：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">兆峰</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt9iedwP';
+      var conf = '3b3713fc7156afdd18b6abd322e1f0e3';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+	<!-- 页面点击小红心 -->
+	<script type="text/javascript" src="/js/src/love.js"></script>
+	<!-- 宠物 -->
+	
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -20px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/z16/z16.model.json")</script>
+  
+</body>
+</html>

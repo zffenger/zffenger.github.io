@@ -94,7 +94,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="jetty," />
 
 
 
@@ -110,15 +110,19 @@
 
 
 
-<meta name="description" content="兆峰的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="兆峰的博客">
-<meta property="og:url" content="http://fengzhaofeng.net/tags/spring配置/index.html">
+<meta name="description" content="Jetty简介：Jetty是一个优秀的Servlet引擎，一个著名的java开源项目，隶属于Eclipse基金会。相比于tomcat，Jetty更加轻量级也更加灵活，它使用Handler作为基本数据模型，所有的扩展性组件都可以以Handler的形式添加到Server中，因此非常容易实现定制化和功能扩展。Jetty是模块化设计的，使用Jetty的时候可以选择性的使用一些组件而禁用一些不必要的组件来减">
+<meta name="keywords" content="jetty">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jetty入门指南">
+<meta property="og:url" content="http://fengzhaofeng.net/2017/Jetty入门指南.html">
 <meta property="og:site_name" content="兆峰的博客">
-<meta property="og:description" content="兆峰的博客">
+<meta property="og:description" content="Jetty简介：Jetty是一个优秀的Servlet引擎，一个著名的java开源项目，隶属于Eclipse基金会。相比于tomcat，Jetty更加轻量级也更加灵活，它使用Handler作为基本数据模型，所有的扩展性组件都可以以Handler的形式添加到Server中，因此非常容易实现定制化和功能扩展。Jetty是模块化设计的，使用Jetty的时候可以选择性的使用一些组件而禁用一些不必要的组件来减">
+<meta property="og:image" content="http://img.blog.csdn.net/20160908174119672">
+<meta property="og:updated_time" content="2017-08-05T15:12:42.060Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="兆峰的博客">
-<meta name="twitter:description" content="兆峰的博客">
+<meta name="twitter:title" content="Jetty入门指南">
+<meta name="twitter:description" content="Jetty简介：Jetty是一个优秀的Servlet引擎，一个著名的java开源项目，隶属于Eclipse基金会。相比于tomcat，Jetty更加轻量级也更加灵活，它使用Handler作为基本数据模型，所有的扩展性组件都可以以Handler的形式添加到Server中，因此非常容易实现定制化和功能扩展。Jetty是模块化设计的，使用Jetty的时候可以选择性的使用一些组件而禁用一些不必要的组件来减">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160908174119672">
 
 
 
@@ -146,13 +150,13 @@
 
 
 
-  <link rel="canonical" href="http://fengzhaofeng.net/tags/spring配置/"/>
+  <link rel="canonical" href="http://fengzhaofeng.net/2017/Jetty入门指南.html"/>
 
 
 
 
 
-  <title>标签: spring配置 | 兆峰的博客</title>
+  <title>Jetty入门指南 | 兆峰的博客</title>
   
 
 
@@ -186,7 +190,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -314,44 +318,278 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h1>spring配置<small>标签</small>
-      </h1>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://fengzhaofeng.net/2017/Jetty入门指南.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="兆峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/author.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="兆峰的博客">
+    </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Jetty入门指南</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-05T23:00:00+08:00">
+                2017-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/Jetty入门指南.html#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/Jetty入门指南.html" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <h3 id="Jetty简介："><a href="#Jetty简介：" class="headerlink" title="Jetty简介："></a>Jetty简介：</h3><p>Jetty是一个优秀的Servlet引擎，一个著名的java开源项目，隶属于Eclipse基金会。相比于tomcat，Jetty更加轻量级也更加灵活，它使用Handler作为基本数据模型，所有的扩展性组件都可以以Handler的形式添加到Server中，因此非常容易实现定制化和功能扩展。Jetty是模块化设计的，使用Jetty的时候可以选择性的使用一些组件而禁用一些不必要的组件来减少内存的占用；Jetty的名言：</p>
+<blockquote>
+<p>Don’t deploy your application in Jetty, deploy Jetty in your application</p>
+</blockquote>
+<p>也说明了Jetty部署的灵活性。<br>目前Jetty的最新稳定版是9.3，发布于2015年，支持Servlet 3.1和JSP 2.3标准，支持HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI等协议标准。</p>
+<h3 id="下载Jetty"><a href="#下载Jetty" class="headerlink" title="下载Jetty"></a>下载Jetty</h3><p>下载Jetty：<a href="https://www.eclipse.org/jetty/download.html" target="_blank" rel="external">https://www.eclipse.org/jetty/download.html</a></p>
+<p> <img src="http://img.blog.csdn.net/20160908174119672" alt="jetty download"></p>
+<p>最新稳定版是 <em>9.3.11.v20160721</em><br>下载 .zip 文件，解压。得到如下目录结构，各目录/文件说明如下：</p>
+<blockquote>
+<p>bin/     含有 .sh 脚本工具，用于Unix类系统上运行Jetty<br>demo-base/    运行demo程序的一个目录<br>etc/    Jetty的XML配置文件目录<br>lib/    Jetty运行所需的所有Jar文件都在改目录<br>logs/    log目录<br>modules/    定义Jetty模块的目录<br>resources/    Jetty所需的一些资源文件目录，如log4j的配置文件<br>webapps/    Jetty默认配置下的webapp目录<br>lincese-eplv10-aslv20.html    Jetty的Lincese文件<br>notice.html    注意事项<br>README.TXT    Jetty使用简介<br>start.ini    启动配置文件<br>start.jar    Jetty启动入口程序<br>VERSION.TXT    版本信息</p>
+</blockquote>
+<h3 id="启动Jetty"><a href="#启动Jetty" class="headerlink" title="启动Jetty"></a>启动Jetty</h3><p>在上述解压的目录中打开命令行，使用 <code>Java –jar start.jar</code> 即可启动jetty。<br>打开浏览器访问<a href="http://localhost:8080，可以看到" target="_blank" rel="external">http://localhost:8080，可以看到</a> 404 错误页面,证明Jetty启动成功。<br>回到命令行窗口，查看启动过程中的信息提出，其中会有这么一个警告:</p>
+<blockquote>
+<p>WARN:oejs.HomeBaseWarning:main: This instance of Jetty is not running from a separate {jetty.base} directory, this is not recommended.  See documentation at <a href="http://www.eclipse.org/jetty/documentation/current/startup.html" target="_blank" rel="external">http://www.eclipse.org/jetty/documentation/current/startup.html</a></p>
+</blockquote>
+<p>这里将Jetty解压出来的根目录称为 <code>$JETTY_HOME</code>，这个警告信息提示：不建议在<code>$JETTY_HOME</code>直接启动Jetty。根据官方文件，Jetty建议使用一个独立的目录独立的配置文件启动Jetty，下文将这个独立的目录称为 <code>JettyBase</code>。</p>
+<p><strong><em>下文中的命令都是Linux下的命令，如果是Windows请自行替换，如Windows下的环境变量用%var%而不是$var，拷贝命令是copy而不是cp</em></strong></p>
+<p>上面展示Jetty的目录结构中有一个demo-base目录，现在将这个目录作为Jetty Base目录，进入该目录，在这个目录启动<code>Jetty：java -jar $JETTY_HOME/start.jar</code><br>然后再访问<a href="http://localhost:8080" target="_blank" rel="external">http://localhost:8080</a> 即可看到Jetty的欢迎页面。</p>
+<h3 id="配置Jetty"><a href="#配置Jetty" class="headerlink" title="配置Jetty"></a>配置Jetty</h3><p>前文提到，Jetty是模块化设计的，使用Jetty时我们可以有选择的启动或者禁用一些模块。查看当前<code>$JETTY_BASE</code>的模块信息：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//列出所有的模块和当前已启用的模块以及模块的依赖关系等信息</span></div><div class="line">cd $JETTY_HOME/demo-base/</div><div class="line">java -jar $JETTY_HOME/start.jar --list-modules</div><div class="line"><span class="comment">//查看当前$JETTY_BASE的配置信息：</span></div><div class="line">java -jar %JETTY_HOME/start.jar --list-config</div></pre></td></tr></table></figure></p>
+<h4 id="创建一个新的JettyBase"><a href="#创建一个新的JettyBase" class="headerlink" title="创建一个新的JettyBase"></a>创建一个新的JettyBase</h4><p>一个Jetty Base 目录可以为Jetty服务器提供一份独立的运行环境和配置信息。Jetty服务器默认配置有以下两个属性：</p>
+<ul>
+<li><code>jetty.home</code> 该属性定义了Jetty 部署的位置信息，包括libs，默认开启模块信息、默认XML配置等</li>
+<li><code>jetty.base</code> 该属性定义了一个特定服务器实例的位置信息，包括它的配置、webapp、logs等信息.</li>
+</ul>
+<p>上述两个属性都可以通过命令行进行设置和查看。对应环境变量<code>$JETTY_HOME</code>和<code>$JETTY_BASE</code>。</p>
+<p>使用以下命令可以创建一个Jetty Base目录，并向该JettyBase添加HTTP模块和deploy模块。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">JETTY_BASE=/tmp/mybase</div><div class="line">mkdir $JETTY_BASE</div><div class="line">cd $JETTY_BASE</div><div class="line">java -jar $JETTY_HOME/start.jar --add-to-startd=http,deploy</div><div class="line"><span class="comment">// 从demo-base拷贝webapp到该JettyBase并启动Jetty。</span></div><div class="line">cp $JETTY_HOME/demo-base/webapps/async-rest.war webapps/ROOT.war</div><div class="line">java -jar $JETTY_HOME/start.jar</div></pre></td></tr></table></figure>
+<h4 id="指定Jetty启动端口"><a href="#指定Jetty启动端口" class="headerlink" title="指定Jetty启动端口"></a>指定Jetty启动端口</h4><p><code>java -jar $JETTY_HOME/start.jar jetty.http.port=8081</code><br>此外，还可以start.ini或者start.d/http.ini配置文件中指定端口jetty.http.port信息。</p>
+<ul>
+<li>start.d/http.ini文件中的所有配置都将作为http模块的命令行参数传入。</li>
+<li>http模块modules/http.mod文件指定了http模块的定义xml文件（etc/jetty-http.xml）和http模块的参数模块（http.ini）</li>
+<li>etc/jetty-http.xml文件根据参数jetty.http.port属性想HttpContector注入端口信息。</li>
+</ul>
+<h4 id="启用https和http2"><a href="#启用https和http2" class="headerlink" title="启用https和http2"></a>启用https和http2</h4><p>启用https和http2，启动jetty并配置端口为8444<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//添加模块</span></div><div class="line">java -jar $JETTY_HOME/start.jar --add-to-startd=https,http2</div><div class="line"><span class="comment">//启动Jetty并指定端口</span></div><div class="line">java -jar $JETTY_HOME/start.jar jetty.ssl.port=<span class="number">8444</span></div></pre></td></tr></table></figure></p>
+<ul>
+<li>–add-to-startd 参数会将配置信息加入start.d目录下对应文件中</li>
+<li>–add-to-start 参数会将配置信息加入 start.ini 文件中</li>
+</ul>
+<p>使用命令<code>java -jar $JETTY_HOME/start.jar –help</code>  获取帮助信息</p>
+<h3 id="Jetty部署web项目"><a href="#Jetty部署web项目" class="headerlink" title="Jetty部署web项目"></a>Jetty部署web项目</h3><p>Jetty Server启动后会检查 JettyBase/webapps目录下的webapp并自根据配置自动部署webapp。</p>
+<p>Deploy说明：</p>
+<ul>
+<li>对目录的部署：如果webapps目录下有example/目录，Jetty会在example目录下寻找WEB-INF/目录，如果存在该目录则会将该app部署为标准webapp，如果不存在则部署为静态web项目。可以通过<a href="http://localhost:8080/example访问。如果目录名以" target="_blank" rel="external">http://localhost:8080/example访问。如果目录名以</a> <code>.d</code> 结尾（如example.d目录）则忽略该目录（不进行deploy）。</li>
+<li>对war包的部署：如果webapps目录下存在example.war，则对war包进行解压并部署，如果同时存在example.war和example/目录，则只部署example.war。</li>
+<li>对xml文件的部署：如果存在example.xml，则根据该xml文件的配置进行部署，xml文件必须配置context path。如果同时存在example.xml，example.war和example/目录，则xml文件的部署优先级最高，同名的war包和目录会被部署器忽略。</li>
+<li>对于ROOT/目录或者ROOT.war则部署之后的Contextpath为<code>“/”</code>(war包优先部署)</li>
+</ul>
 
-      <h2 class="post-title">
+      
+    </div>
+	
+	<div>
+	  
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+	
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/Spring常用配置示例说明 .html" itemprop="url">
-              
-                <span itemprop="name">Spring常用配置示例</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h2>
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>支持一杯可乐吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/weixin.png" alt="兆峰 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/alipay.png" alt="兆峰 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
 
-    </header>
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      兆峰
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengzhaofeng.net/2017/Jetty入门指南.html" title="Jetty入门指南">http://fengzhaofeng.net/2017/Jetty入门指南.html</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jetty/" rel="tag"><i class="fa fa-tag"></i> jetty</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/ORMLite使用指南.html" rel="next" title="ORMLite使用指南">
+                <i class="fa fa-chevron-left"></i> ORMLite使用指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/Java多线程之多线程的创建与同步.html" rel="prev" title="java多线程之多线程的创建与同步">
+                java多线程之多线程的创建与同步 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -359,6 +597,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
 
         </div>
         
@@ -378,8 +622,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/author.jpg"
@@ -470,6 +723,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jetty简介："><span class="nav-number">1.</span> <span class="nav-text">Jetty简介：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载Jetty"><span class="nav-number">2.</span> <span class="nav-text">下载Jetty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动Jetty"><span class="nav-number">3.</span> <span class="nav-text">启动Jetty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Jetty"><span class="nav-number">4.</span> <span class="nav-text">配置Jetty</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建一个新的JettyBase"><span class="nav-number">4.1.</span> <span class="nav-text">创建一个新的JettyBase</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指定Jetty启动端口"><span class="nav-number">4.2.</span> <span class="nav-text">指定Jetty启动端口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启用https和http2"><span class="nav-number">4.3.</span> <span class="nav-text">启用https和http2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jetty部署web项目"><span class="nav-number">5.</span> <span class="nav-text">Jetty部署web项目</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -574,10 +843,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
-  
+
 
   
 
