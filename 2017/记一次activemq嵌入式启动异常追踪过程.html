@@ -1,0 +1,1252 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="activemq,spring,工作记录," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="背景：公司业务的需求，需要一个系统向另一个系统推送消息。架构师基于易用性和解耦考虑，选用了开源消息中间件ActivemqMQ。鉴于到消息量较小且用途单一，也是为了减少部署时的工作量，考虑项目初期将Activemq的broker嵌入到消息发送端。消息发送端java部分（还有C++部分，这里不涉及）是一个spring mvc架构的web应用。 Activemq的版本是5.13.0，打开Activemq">
+<meta name="keywords" content="activemq,spring,工作记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次ActiveMQ嵌入式启动异常追踪过程">
+<meta property="og:url" content="http://fengzhaofeng.net/2017/记一次activemq嵌入式启动异常追踪过程.html">
+<meta property="og:site_name" content="兆峰的博客">
+<meta property="og:description" content="背景：公司业务的需求，需要一个系统向另一个系统推送消息。架构师基于易用性和解耦考虑，选用了开源消息中间件ActivemqMQ。鉴于到消息量较小且用途单一，也是为了减少部署时的工作量，考虑项目初期将Activemq的broker嵌入到消息发送端。消息发送端java部分（还有C++部分，这里不涉及）是一个spring mvc架构的web应用。 Activemq的版本是5.13.0，打开Activemq">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/iFc84993fb.png">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/0blgl91kLl.png">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/Fih6Fjm3ce.png">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/I0ajDCG28d.png">
+<meta property="og:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/0aj3C8khBB.png">
+<meta property="og:updated_time" content="2017-08-15T13:38:16.042Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记一次ActiveMQ嵌入式启动异常追踪过程">
+<meta name="twitter:description" content="背景：公司业务的需求，需要一个系统向另一个系统推送消息。架构师基于易用性和解耦考虑，选用了开源消息中间件ActivemqMQ。鉴于到消息量较小且用途单一，也是为了减少部署时的工作量，考虑项目初期将Activemq的broker嵌入到消息发送端。消息发送端java部分（还有C++部分，这里不涉及）是一个spring mvc架构的web应用。 Activemq的版本是5.13.0，打开Activemq">
+<meta name="twitter:image" content="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/iFc84993fb.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":true,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fengzhaofeng.net/2017/记一次activemq嵌入式启动异常追踪过程.html"/>
+
+
+
+
+
+  <title>记一次ActiveMQ嵌入式启动异常追踪过程 | 兆峰的博客</title>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63288986";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">兆峰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不忘初心</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://fengzhaofeng.net/2017/记一次activemq嵌入式启动异常追踪过程.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="兆峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/author.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="兆峰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">记一次ActiveMQ嵌入式启动异常追踪过程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-15T20:05:00+08:00">
+                2017-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/记一次activemq嵌入式启动异常追踪过程.html#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/记一次activemq嵌入式启动异常追踪过程.html" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景："><a href="#背景：" class="headerlink" title="背景："></a>背景：</h2><p>公司业务的需求，需要一个系统向另一个系统推送消息。架构师基于易用性和解耦考虑，选用了开源消息中间件<code>ActivemqMQ</code>。鉴于到消息量较小且用途单一，也是为了减少部署时的工作量，考虑项目初期将Activemq的<code>broker</code>嵌入到消息发送端。消息发送端java部分（还有C++部分，这里不涉及）是一个spring mvc架构的web应用。</p>
+<p>Activemq的版本是5.13.0，打开<code>Activemq</code>的<code>conf</code>目录<code>activemq.xml</code>文件，可以清晰的看到里面配置的都是spring <code>xbean</code>类型的<code>bean</code>，也就是说<code>activemq</code>本身也是使用<code>spring</code>管理的，将a<code>ctivemq</code>嵌入到现有<code>spring</code>容器中非常简单:将这些bean配置copy过来即可。同时activemq为了spring管理的便利，提供了 <code>org.apache.activemq.xbean.BrokerFactoryBean</code> 启动类。</p>
+<p>配置如下：<br>在现有项目的spring配置中增加如下bean:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"broker"</span> <span class="attr">class</span>=<span class="string">"org.apache.activemq.xbean.BrokerFactoryBean"</span>&gt;</span>    </div><div class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"config"</span> <span class="attr">value</span>=<span class="string">"classpath:activemq.xml"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"start"</span> <span class="attr">value</span>=<span class="string">"true"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>将<code>activemq.xml</code>文件copy过来略作修改即可，以下是一份简化的配置（只列出关键部分）<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">beans</span></span></div><div class="line">        <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></div><div class="line">        http://www.springframework.org/schema/beans/spring-beans.xsd</div><div class="line">        http://activemq.apache.org/schema/core</div><div class="line">        http://activemq.apache.org/schema/core/activemq-core.xsd"&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">broker</span> <span class="attr">xmlns</span>=<span class="string">"http://activemq.apache.org/schema/core"</span>   <span class="attr">brokerName</span>=<span class="string">"mq_broker"</span> <span class="attr">dataDirectory</span>=<span class="string">"D:/activemq/data/api"</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">persistenceAdapter</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">kahaDB</span> <span class="attr">directory</span>=<span class="string">"D:/activemq/data/api/kahadb"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">persistenceAdapter</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">systemUsage</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">systemUsage</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">memoryUsage</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">memoryUsage</span> <span class="attr">percentOfJvmHeap</span>=<span class="string">"10"</span>/&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">memoryUsage</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">storeUsage</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">storeUsage</span> <span class="attr">limit</span>=<span class="string">"10 gb"</span>/&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">storeUsage</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">tempUsage</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">tempUsage</span> <span class="attr">limit</span>=<span class="string">"5 gb"</span>/&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">tempUsage</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">systemUsage</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">systemUsage</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">transportConnectors</span>&gt;</span>         </div><div class="line">            <span class="tag">&lt;<span class="name">transportConnector</span> <span class="attr">name</span>=<span class="string">"openwire"</span> <span class="attr">uri</span>=<span class="string">"tcp://0.0.0.0:54300?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">transportConnectors</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">shutdownHooks</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></div><div class="line">                  <span class="attr">class</span>=<span class="string">"org.apache.activemq.hooks.SpringContextHook"</span>/&gt;</div><div class="line">        <span class="tag">&lt;/<span class="name">shutdownHooks</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">broker</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在现有spring项目增加上述配置即完成了activemq的嵌入式启动。</p>
+<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>项目经过自测和N轮的测试验证，都木有问题。但是！某一天测试人员报告说，整个项目起不来了，另一位同事检查log后定位是activemq出的问题，但没定位到问题的确切位置。由于该功能是我加入的，就把case转给我了。log如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'broker' defined in class path resource [spring.xml]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the ApplicationContext</div><div class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1512)</div><div class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:521)</div><div class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:458)</div><div class="line">	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:296)</div><div class="line">	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:223)</div><div class="line">	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:293)</div><div class="line">	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:194)</div><div class="line">	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:610)</div><div class="line">	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:932)</div><div class="line">	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:479)</div><div class="line">	at org.springframework.context.support.ClassPathXmlApplicationContext.<span class="tag">&lt;<span class="name">init</span>&gt;</span>(ClassPathXmlApplicationContext.java:139)</div><div class="line">	at org.springframework.context.support.ClassPathXmlApplicationContext.<span class="tag">&lt;<span class="name">init</span>&gt;</span>(ClassPathXmlApplicationContext.java:83)</div><div class="line">	at com.fiberhome.iomsapi.IomsApiStartUp.afterPropertiesSet(IomsApiStartUp.java:68)</div><div class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1571)</div><div class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1509)</div><div class="line">	... 28 more</div><div class="line">Caused by: java.lang.IllegalStateException: BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the ApplicationContext</div><div class="line">	at org.springframework.context.support.AbstractRefreshableApplicationContext.getBeanFactory(AbstractRefreshableApplicationContext.java:171)</div><div class="line">	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1090)</div><div class="line">	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:487)</div><div class="line">	at org.apache.xbean.spring.context.ResourceXmlApplicationContext.<span class="tag">&lt;<span class="name">init</span>&gt;</span>(ResourceXmlApplicationContext.java:88)</div><div class="line">	at org.apache.xbean.spring.context.ResourceXmlApplicationContext.<span class="tag">&lt;<span class="name">init</span>&gt;</span>(ResourceXmlApplicationContext.java:76)</div><div class="line">	at org.apache.xbean.spring.context.ResourceXmlApplicationContext.<span class="tag">&lt;<span class="name">init</span>&gt;</span>(ResourceXmlApplicationContext.java:72)</div><div class="line">	at org.apache.xbean.spring.context.ResourceXmlApplicationContext.<span class="tag">&lt;<span class="name">init</span>&gt;</span>(ResourceXmlApplicationContext.java:68)</div><div class="line">	at org.apache.activemq.xbean.BrokerFactoryBean.afterPropertiesSet(BrokerFactoryBean.java:83)</div><div class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1571)</div><div class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1509)</div><div class="line">	... 42 more</div></pre></td></tr></table></figure></p>
+<p>这个log也把我看蒙了。这句话 <code>Error creating bean with name &#39;broker&#39; defined in class path resource [spring.xml]</code> 可以看到我们配置的activemq的broker启动失败了，下面的这句话： <code>at org.apache.activemq.xbean.BrokerFactoryBean.afterPropertiesSet(BrokerFactoryBean.java:83)</code> 可以看到错误出现的位置：<br><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/iFc84993fb.png" alt="mark"></p>
+<p>查看报错位置的源码第83行，这里就是创建了一个用于管理activemq的spring容器applicationContext。这里报错了只能抓瞎，啥有效信息也看不到。</p>
+<h2 id="问题追踪："><a href="#问题追踪：" class="headerlink" title="问题追踪："></a>问题追踪：</h2><p>既然无法直接定位问题，那就继续往调用栈顶端分析，找spring的异常堆栈，比较有用的是这几句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Caused by: java.lang.IllegalStateException: BeanFactory not initialized or already closed - call &apos;refresh&apos; before accessing beans via the ApplicationContext</div><div class="line">	at org.springframework.context.support.AbstractRefreshableApplicationContext.getBeanFactory(AbstractRefreshableApplicationContext.java:171)</div><div class="line">	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1090)</div><div class="line">	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:487)</div></pre></td></tr></table></figure></p>
+<p>可以看到在spring容器初始化方法<code>refresh</code>中抛出的异常，找到<code>AbstractApplicationContext</code>的<code>refresh</code>方法，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</div><div class="line">   <span class="keyword">synchronized</span> (<span class="keyword">this</span>.startupShutdownMonitor) &#123;</div><div class="line">      <span class="comment">// Prepare this context for refreshing.</span></div><div class="line">      prepareRefresh();</div><div class="line">      <span class="comment">// Tell the subclass to refresh the internal bean factory.</span></div><div class="line">      ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();</div><div class="line">      <span class="comment">// Prepare the bean factory for use in this context.</span></div><div class="line">      prepareBeanFactory(beanFactory);</div><div class="line"></div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">         <span class="comment">// Allows post-processing of the bean factory in context subclasses.</span></div><div class="line">         postProcessBeanFactory(beanFactory);</div><div class="line">         <span class="comment">// Invoke factory processors registered as beans in the context.</span></div><div class="line">         invokeBeanFactoryPostProcessors(beanFactory);</div><div class="line">         <span class="comment">// Register bean processors that intercept bean creation.</span></div><div class="line">         registerBeanPostProcessors(beanFactory);</div><div class="line">         <span class="comment">// Initialize message source for this context.</span></div><div class="line">         initMessageSource();</div><div class="line">         <span class="comment">// Initialize event multicaster for this context.</span></div><div class="line">         initApplicationEventMulticaster();</div><div class="line">         <span class="comment">// Initialize other special beans in specific context subclasses.</span></div><div class="line">         onRefresh();</div><div class="line">         <span class="comment">// Check for listener beans and register them.</span></div><div class="line">         registerListeners();</div><div class="line">         <span class="comment">// Instantiate all remaining (non-lazy-init) singletons.</span></div><div class="line">         finishBeanFactoryInitialization(beanFactory);</div><div class="line">         <span class="comment">// Last step: publish corresponding event.</span></div><div class="line">         finishRefresh();</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">catch</span> (BeansException ex) &#123;</div><div class="line">         <span class="comment">// Destroy already created singletons to avoid dangling resources.</span></div><div class="line">         destroyBeans();</div><div class="line">         <span class="comment">// Reset 'active' flag.</span></div><div class="line">         cancelRefresh(ex);</div><div class="line">         <span class="comment">// Propagate exception to caller.</span></div><div class="line">         <span class="keyword">throw</span> ex;</div><div class="line">      &#125;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到是<code>refresh</code>方法<code>catch</code>代码块中的<code>destroyBeans()</code>;方法抛出的异常，<code>destroyBeans()</code>方法调用源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">destroyBeans</span><span class="params">()</span> </span>&#123;</div><div class="line">   getBeanFactory().destroySingletons();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> ConfigurableListableBeanFactory <span class="title">getBeanFactory</span><span class="params">()</span> </span>&#123;</div><div class="line">   <span class="keyword">synchronized</span> (<span class="keyword">this</span>.beanFactoryMonitor) &#123;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.beanFactory == <span class="keyword">null</span>) &#123;</div><div class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"BeanFactory not initialized or already closed - "</span> +</div><div class="line">               <span class="string">"call 'refresh' before accessing beans via the ApplicationContext"</span>);</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.beanFactory;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到这个异常是由于spring容器启动失败尝试销毁所有已创建bean时，发现<code>beanFactory</code>已经为<code>null</code>了，所以就报异常说<code>beanFactory还未初始化或者已经被关闭</code>。</p>
+<p>目前可以知道，spring容器初始化activemq的时候抛出了一个异常（是什么异常暂时不知道），然后按照spring的流程，要首先做一些清理工作（销毁已创建的bean），然后再将这个异常向外抛出。然而在进行清理工作的时候又抛出了一个新的异常，导致代码不能继续向下执行了，原有异常堆栈也就丢失了，导致我们看不到有用的异常信息。</p>
+<p>其实要想看原异常堆栈很简单，在<code>destroyBeans()</code> 方法上打一个断点，让其先不要执行，去看看catch代码块catch到的异常是什么即可。然而这种方法治标不治本，能找到本次导致异常的原因，下次出现类似问题有效异常信息又被隐藏了。总不能每次出异常都得打断点才能看到有效异常堆栈吧。。。</p>
+<p>根本的解决办法还是要找出导致二次抛出异常的原因并解决掉，让有效的异常堆栈能够正常暴露出来。</p>
+<p>要继续分析下去就不能只依靠log信息了，需要打断点调试。首先要明确一点，spring的<code>refresh</code>方法中，<code>beanFactory</code>在<code>try</code>代码块之前就已经初始化非空了，因而上述异常说<code>beanFactory还未初始化或者已经被关闭</code>，这里不可能是未初始化，只可能是<code>beanFactory</code>在什么地方被提前关闭才导致的异常。</p>
+<p>先按上面的方法在<code>destroyBeans()</code>上打断点，查看真正的异常堆栈，如下：<br><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/0blgl91kLl.png" alt="mark"></p>
+<p>竟然只是个坑爹的端口占用。当然这里看异常不是重点，重点是把异常堆栈打印到控制台（使用<code>intelij IDEA</code> <code>右键</code>–&gt;<code>Evaluate Expression</code>），定位出报异常的具体位置，好进一步查找原因。如下图：<br><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/Fih6Fjm3ce.png" alt="mark"></p>
+<p>这里粘贴一些关键异常堆栈，以防止上面图片看不太清：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Caused by: java.io.IOException: Transport Connector could not be registered in JMX: java.io.IOException: Failed to bind to server socket: tcp:<span class="comment">//0.0.0.0:54300?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600 due to: java.net.BindException: Address already in use: JVM_Bind</span></div><div class="line">	at org.apache.activemq.util.IOExceptionSupport.create(IOExceptionSupport.java:<span class="number">27</span>)</div><div class="line">	at org.apache.activemq.broker.BrokerService.registerConnectorMBean(BrokerService.java:<span class="number">2193</span>)</div><div class="line">	at org.apache.activemq.broker.BrokerService.startTransportConnector(BrokerService.java:<span class="number">2652</span>)</div><div class="line">	at org.apache.activemq.broker.BrokerService.startAllConnectors(BrokerService.java:<span class="number">2569</span>)</div><div class="line">	at org.apache.activemq.broker.BrokerService.doStartBroker(BrokerService.java:<span class="number">737</span>)</div><div class="line">	at org.apache.activemq.broker.BrokerService.startBroker(BrokerService.java:<span class="number">697</span>)</div><div class="line">	at org.apache.activemq.broker.BrokerService.start(BrokerService.java:<span class="number">618</span>)</div><div class="line">	at org.apache.activemq.xbean.XBeanBrokerService.afterPropertiesSet(XBeanBrokerService.java:<span class="number">73</span>)</div></pre></td></tr></table></figure></p>
+<p>可以看到异常出在<code>BrokerService</code> 类的start方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    <span class="keyword">if</span> (stopped.get() || !started.compareAndSet(<span class="keyword">false</span>, <span class="keyword">true</span>)) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    stopping.set(<span class="keyword">false</span>);</div><div class="line">    startDate = <span class="keyword">new</span> Date();</div><div class="line">    MDC.put(<span class="string">"activemq.broker"</span>, brokerName);</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">if</span> (systemExitOnShutdown &amp;&amp; useShutdownHook) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConfigurationException(<span class="string">"'useShutdownHook' property cannot be be used with 'systemExitOnShutdown', please turn it off (useShutdownHook=false)"</span>);</div><div class="line">        &#125;</div><div class="line">        processHelperProperties();</div><div class="line">        <span class="keyword">if</span> (isUseJmx()) &#123;</div><div class="line">            MDC.remove(<span class="string">"activemq.broker"</span>);</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                startManagementContext();</div><div class="line">                <span class="keyword">for</span> (NetworkConnector connector : getNetworkConnectors()) &#123;</div><div class="line">                    registerNetworkConnectorMBean(connector);</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                MDC.put(<span class="string">"activemq.broker"</span>, brokerName);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">final</span> BrokerRegistry brokerRegistry = BrokerRegistry.getInstance();</div><div class="line">        <span class="keyword">if</span> (brokerRegistry.lookup(getBrokerName()) == <span class="keyword">null</span>) &#123;</div><div class="line">            brokerRegistry.bind(getBrokerName(), BrokerService.<span class="keyword">this</span>);</div><div class="line">        &#125;</div><div class="line">        startPersistenceAdapter(startAsync);</div><div class="line">        startBroker(startAsync);  <span class="comment">//异常就出在这里</span></div><div class="line">        brokerRegistry.bind(getBrokerName(), BrokerService.<span class="keyword">this</span>);</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        LOG.error(<span class="string">"Failed to start Apache ActiveMQ (&#123;&#125;, &#123;&#125;)"</span>, <span class="keyword">new</span> Object[]&#123; getBrokerName(), brokerId &#125;, e);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">if</span> (!stopped.get()) &#123;</div><div class="line">                stop();</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">            LOG.warn(<span class="string">"Failed to stop broker after failure in start. This exception will be ignored."</span>, ex);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">throw</span> e;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        MDC.remove(<span class="string">"activemq.broker"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个start方法较为复杂，定位端口占用异常出在startBroker(startAsync)方法，出现异常后肯定进入catch代码块，因而把spring容器的beanFactory关闭的代码可能存在与catch代码块中调用的stop方法中，下面进入stop方法查找：<br>stop方法也很长，其中有下面一段代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">synchronized</span> (shutdownHooks) &#123;</div><div class="line">    <span class="keyword">for</span> (Runnable hook : shutdownHooks) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            hook.run();</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            stopper.onException(hook, e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>猜想可能是这个<code>shutdownHook</code>关闭了spring容器。<br><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/I0ajDCG28d.png" alt="mark"></p>
+<p>在这个代码块上打断点，可以看到这里<code>shutdownHooks</code>是个<code>ArrayList</code>，只有一个元素，是<code>SpringContextHook</code>对象。从这个<code>shutdownhook</code>的命名上可以印证我们的猜想很可能是正确的。继续进入<code>SpringContextHook</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringContextHook</span> <span class="keyword">implements</span> <span class="title">Runnable</span>, <span class="title">ApplicationContextAware</span> </span>&#123;</div><div class="line"></div><div class="line">    ApplicationContext applicationContext;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (applicationContext <span class="keyword">instanceof</span> ConfigurableApplicationContext) &#123;</div><div class="line">            ((ConfigurableApplicationContext) applicationContext).close();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException </span>&#123;</div><div class="line">        <span class="keyword">this</span>.applicationContext = applicationContext;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>果然，是这里调用了<code>close</code>方法，提前关闭了spring容器。<br>activemq启动失败则调用shutdownhook方法关闭管理它的spring容器，这不是我们所希望的，因为这会导致有用的异常堆栈被隐藏。下面要做的就是找出这个<code>shutdownhook</code>是何时被加入activemq的<code>BrokerService</code>的。<br>查找发现BrokerService类中有个<code>addShutdownHook(Runnable hook)</code>方法，打上断点：<br><img src="http://ou1rmvzqd.bkt.clouddn.com/blogimg/170815/0aj3C8khBB.png" alt="mark"></p>
+<p>这样的调用栈一看就是spring对bean的装配过程，也就是说这个<code>shutdownhook</code>是通过spring装配进来的，那必有其配置源，要么是注解，要么是xml文件。</p>
+<p>再回到文章开头提到的activemq.xml中仔细检查，发现以下配置项：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;shutdownHooks&gt;</div><div class="line">    &lt;bean xmlns="http://www.springframework.org/schema/beans"</div><div class="line">          class="org.apache.activemq.hooks.SpringContextHook"/&gt;</div><div class="line">&lt;/shutdownHooks&gt;</div></pre></td></tr></table></figure></p>
+<p>问题找到了，把这几行配置删除即可。</p>
+<p>再重启项目测试一下，<code>Address already in used</code> 的异常信息终于能直接打印出来了。问题解决。<br>又去检查了activemq5.13.0 release包中<code>activemq.xml</code>配置，发现其已有说明。我们知道activemq单独部署时会同时启动一个jetty容器作为web控制台，这里配置<code>shutdownhook</code>的原意是当activemq启动失败时应该顺带着把<code>jetty</code>容器也关了。这里做嵌入式启动activemq时却没注意到将这几行配置删掉，从而导致了这一系列问题。</p>
+<p>虽然只是个简单的端口占用导致的异常，但追踪分析问题过程中却受益良多。这个问题也是由于自己检查配置文件不仔细引起的，记录此文以自省。</p>
+
+      
+    </div>
+	
+	<div>
+	  
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+	
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>支持一杯可乐吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/weixin.png" alt="兆峰 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/alipay.png" alt="兆峰 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      兆峰
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengzhaofeng.net/2017/记一次activemq嵌入式启动异常追踪过程.html" title="记一次ActiveMQ嵌入式启动异常追踪过程">http://fengzhaofeng.net/2017/记一次activemq嵌入式启动异常追踪过程.html</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/activemq/" rel="tag"><i class="fa fa-tag"></i> activemq</a>
+          
+            <a href="/tags/spring/" rel="tag"><i class="fa fa-tag"></i> spring</a>
+          
+            <a href="/tags/工作记录/" rel="tag"><i class="fa fa-tag"></i> 工作记录</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/Jetty入门指南.html" rel="next" title="Jetty入门指南">
+                <i class="fa fa-chevron-left"></i> Jetty入门指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/转载/【转载】TCP的那些事儿(上).html" rel="prev" title="【转载】TCP的那些事儿(上)">
+                【转载】TCP的那些事儿(上) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/author.jpg"
+               alt="兆峰" />
+          <p class="site-author-name" itemprop="name">兆峰</p>
+           
+              <p class="site-description motion-element" itemprop="description">兆峰的博客</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zffenger" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/zffenger" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              推荐
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.54tianzhisheng.cn/" title="田志声" target="_blank">田志声</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://siberiawolf.com/free_programming/index.html" title="编程书籍" target="_blank">编程书籍</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景："><span class="nav-number">1.</span> <span class="nav-text">背景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题："><span class="nav-number">2.</span> <span class="nav-text">问题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题追踪："><span class="nav-number">3.</span> <span class="nav-text">问题追踪：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">兆峰</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt9iedwP';
+      var conf = '3b3713fc7156afdd18b6abd322e1f0e3';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+	<!-- 页面点击小红心 -->
+	<script type="text/javascript" src="/js/src/love.js"></script>
+	<!-- 宠物 -->
+	
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -20px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/z16/z16.model.json")</script>
+  
+</body>
+</html>

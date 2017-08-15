@@ -113,7 +113,7 @@
 <meta name="description" content="兆峰的博客">
 <meta property="og:type" content="website">
 <meta property="og:title" content="兆峰的博客">
-<meta property="og:url" content="http://fengzhaofeng.net/tags/Spring/index.html">
+<meta property="og:url" content="http://fengzhaofeng.net/tags/spring/index.html">
 <meta property="og:site_name" content="兆峰的博客">
 <meta property="og:description" content="兆峰的博客">
 <meta name="twitter:card" content="summary">
@@ -146,13 +146,13 @@
 
 
 
-  <link rel="canonical" href="http://fengzhaofeng.net/tags/Spring/"/>
+  <link rel="canonical" href="http://fengzhaofeng.net/tags/spring/"/>
 
 
 
 
 
-  <title>标签: Spring | 兆峰的博客</title>
+  <title>标签: spring | 兆峰的博客</title>
   
 
 
@@ -316,7 +316,7 @@
 
   <div id="posts" class="posts-collapse">
     <div class="collection-title">
-      <h1>Spring<small>标签</small>
+      <h1>spring<small>标签</small>
       </h1>
     </div>
 
@@ -328,37 +328,9 @@
 
       <h2 class="post-title">
         
-            <a class="post-title-link" href="/2017/Spring源码解析之ApplicationContext继承结构分析.html" itemprop="url">
+            <a class="post-title-link" href="/2017/记一次activemq嵌入式启动异常追踪过程.html" itemprop="url">
               
-                <span itemprop="name">Spring源码解析之ApplicationContext继承结构分析</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/Spring常用配置示例说明 .html" itemprop="url">
-              
-                <span itemprop="name">Spring常用配置示例</span>
+                <span itemprop="name">记一次ActiveMQ嵌入式启动异常追踪过程</span>
               
             </a>
         
@@ -366,9 +338,9 @@
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
+              datetime="2017-08-15T20:05:00+08:00"
+              content="2017-08-15" >
+          08-15
         </time>
       </div>
 
@@ -422,7 +394,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -435,7 +407,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -975,6 +947,49 @@
     $(document).on('keyup', function (event) {
       var shouldDismissSearchPopup = event.which === 27 &&
         $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+	<!-- 页面点击小红心 -->
+	<script type="text/javascript" src="/js/src/love.js"></script>
+	<!-- 宠物 -->
+	
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -20px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/z16/z16.model.json")</script>
+  
+</body>
+</html>
+is(':visible');
       if (shouldDismissSearchPopup) {
         onPopupClose();
       }
