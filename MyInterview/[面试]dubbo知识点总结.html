@@ -110,15 +110,16 @@
 
 
 
-<meta name="description" content="兆峰的博客">
+<meta name="description" content="dubbo知识点小结概述dubbo是Alibaba开源的分布式服务框架，由于阿里巴巴多年来（2012）停止更新维护，我们使用的是当当网定制的dubbox，版本是2.8.4. 是下载github源码自己编译安装到maven私服的。dubbox和dubbo的区别：支持rest风格的rpc调用，增加了一些序列化工具，升级了spring和zookeeper客户端dubbo这个框架有一个很大的特点就是分层次">
 <meta property="og:type" content="website">
 <meta property="og:title" content="兆峰的博客">
-<meta property="og:url" content="http://fengzhaofeng.net/archives/2017/08/index.html">
+<meta property="og:url" content="http://fengzhaofeng.net/MyInterview/[面试]dubbo知识点总结.html">
 <meta property="og:site_name" content="兆峰的博客">
-<meta property="og:description" content="兆峰的博客">
+<meta property="og:description" content="dubbo知识点小结概述dubbo是Alibaba开源的分布式服务框架，由于阿里巴巴多年来（2012）停止更新维护，我们使用的是当当网定制的dubbox，版本是2.8.4. 是下载github源码自己编译安装到maven私服的。dubbox和dubbo的区别：支持rest风格的rpc调用，增加了一些序列化工具，升级了spring和zookeeper客户端dubbo这个框架有一个很大的特点就是分层次">
+<meta property="og:updated_time" content="2017-09-28T11:35:09.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="兆峰的博客">
-<meta name="twitter:description" content="兆峰的博客">
+<meta name="twitter:description" content="dubbo知识点小结概述dubbo是Alibaba开源的分布式服务框架，由于阿里巴巴多年来（2012）停止更新维护，我们使用的是当当网定制的dubbox，版本是2.8.4. 是下载github源码自己编译安装到maven私服的。dubbox和dubbo的区别：支持rest风格的rpc调用，增加了一些序列化工具，升级了spring和zookeeper客户端dubbo这个框架有一个很大的特点就是分层次">
 
 
 
@@ -146,13 +147,13 @@
 
 
 
-  <link rel="canonical" href="http://fengzhaofeng.net/archives/2017/08/"/>
+  <link rel="canonical" href="http://fengzhaofeng.net/MyInterview/[面试]dubbo知识点总结.html"/>
 
 
 
 
 
-  <title>归档 | 兆峰的博客</title>
+  <title> | 兆峰的博客</title>
   
 
 
@@ -186,7 +187,7 @@
     
   
 
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -314,403 +315,28 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+  <header class="post-header">
 
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      嗯..! 目前共计 14 篇日志。 继续努力。
-    </span>
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
 
     
-
-      
-      
-      
-
-      
-        
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
-        </div>
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/转载/【转载】TCP的那些事儿(上).html" itemprop="url">
-              
-                <span itemprop="name">【转载】TCP的那些事儿(上)</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-15T20:05:00+08:00"
-              content="2017-08-15" >
-          08-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+      <h1 id="dubbo知识点小结"><a href="#dubbo知识点小结" class="headerlink" title="dubbo知识点小结"></a>dubbo知识点小结</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>dubbo是Alibaba开源的分布式服务框架，由于阿里巴巴多年来（2012）停止更新维护，我们使用的是当当网定制的dubbox，版本是2.8.4. 是下载github源码自己编译安装到maven私服的。<br>dubbox和dubbo的区别：支持rest风格的rpc调用，增加了一些序列化工具，升级了spring和zookeeper客户端<br>dubbo这个框架有一个很大的特点就是分层次设计，各个层次可以自由定制，各层次之间尽可能的松耦合，通过ExtensionLoader扩展配置各层次之间的具体实现，ExtensionLoader类似于JDK的ServiceLoader机制，不过更加灵活，支持延迟加载和自适应加载。</p>
+<p>ExtensionLoader的getAdaptiveExtension方法，返回一个代理对象，根据URL中参数执行特定代理对象的对应方法。</p>
+<p>概念：Filter、Invoker、Cluster、Directory、Protocol、Transporter.<br>暴露服务的过程：ServiceConfig通过ProxyFactory创建Invoker，通过Protocol的export方法创建Exporter，调用Transporter的bind,暴露成功后registry;<br>服务引用过程：ReferenceConfig通过registryService订阅provider，通过Protocol的refer产生invoker, 将多个Invoker合并成一个Cluster，通过Transporter的connect方法建立连接，暴露注册服务中心。</p>
+<p>我们的服务分了几个模块，之间通过RPC调用耦合，原使用的是Hessian的RPC，它走的是Http协议。大概有四个模块，是四类模块，usermanager负责用户管理，service-center负责license授权，另外一个是业务数据代理模块，代理网管业务，称为ems-proxy，系统可以对接多个网管，就存在多个ems-proxy模块，每个模块会配置一个唯一的emsid。运行时可动态增加ems-proxy。最后一个是负责与前台交互和业务处理的模块，也是我们开发任务集中的模块。其通过RPC调用另外三个模块。<br>为了让调用关系更清晰和便于管理，我们引入的dubbo, 将RPC的服务提供者配置为provider，将调用者配置为comsumer，通过dubbo来管理服务之间的调用关系。协议使用dubbo协议，序列化使用hessian，注册中心使用zookeeper。<br>这其中有一个问题，就是多个ems-proxy模块暴露相同的接口，但其数据是不同的，应该区别对待，不能将之视为同一个接口服务的热备。这里涉及了一点dubbo的定制化开发。需要两个工作，第一，写一个注册订阅功能的类，利用dubbo的RegistryService接口可以向注册中心注册节点，也可以订阅节点的变化。每启动一个ems-proxy就利用利用该类向注册中心注册一条URL，而调用者订阅注册URL节点的变化。相当于让consumer时刻得知网络中有哪些ems-proxy，这样调用的时候就可以选择性调用了。第二，dubbo会订阅统一接口的provider信息放在一个directory中，然后通过一定的高可用策略将其伪装为一个Invoker。我们要做的是自定义一个Cluster和Invoker，调用时将emsid写入RpcContext中，在Invoker中取出emsId然后选择对应的provider url进行调用。RPCContext保存在ThreadLocal中，代表当前调用上下文。</p>
+<p>UserManager使用Shiro.在web.xml的Filter中配置shiro的filter，在需要权限的Controller方法上加注解即可。<br>shiro有三个实体，用户、角色、权限，用户与角色是多对多关系，角色与权限是多对多关系，角色是权限的集合。<br>有三个组件，Subject、SecurityManager和Realm，SecurityManager是Shiro架构中最核心的组件，通过它可以协调其他组件完成用户认证和授权。实际上，SecurityManager就是Shiro框架的控制器。Realm定义了访问数据的方式，用来连接不同的数据源。Subject的login操作会委托给SecurityManager,SecurityManager通过Realm获取数据库中的用户认证和授权信息，进行比对判断。认证或授权失败则抛出异常。<br>shiro-web通过shiroFilter拦截用户信息，获取subject信息并存放于ThreadLocal中，在spring的Controller层通过AOP拦截方法，获取注解判断是否需要权限认证。</p>
+<p>Shiro动态配置权限。现有的注解如RequiresPermissions一旦配置，该方法就固定的需要某个权限，不能动态更改。我们要做的是在系统运行时对某些方法开启或关闭权限认证，或者修改所需权限。另外可以配置用户拥有的权限。基于此，自定义了一个注解，叫PermissionLimited,通过修改shiro的方法拦截过程，拦截到具有PermissionLimited方法时，获取该方法的RequestMapping URL，以该URL为key向数据库查询该方法所需权限，然后再验证当前用户是否拥有该权限。</p>
+<p>AOP动态代理冲突问题。使用shiro时注册了DefaultAdvisorAutoProxyCreator，用来开启shiro的aop拦截功能。后来需要用spring aop做调用统计日志，又配置了aop:aspectj-autoproxy标签，又向容器注册了AspectJAwareAdvisorAutoProxyCreator，两个aop创建器同事工作导致二次代理问题，导致RequestMapping全部失效，所有的springMVC Controller访问都是404错误。</p>
+<p>zookeeper问题：</p>
 
     
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/记一次activemq嵌入式启动异常追踪过程.html" itemprop="url">
-              
-                <span itemprop="name">记一次ActiveMQ嵌入式启动异常追踪过程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-15T20:05:00+08:00"
-              content="2017-08-15" >
-          08-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/转载/【转载】TCP的那些事儿(下).html" itemprop="url">
-              
-                <span itemprop="name">【转载】TCP的那些事儿(下)</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-15T20:05:00+08:00"
-              content="2017-08-15" >
-          08-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/Java设计模式之单例模式.html" itemprop="url">
-              
-                <span itemprop="name">Java设计模式之单例模式</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/Spring常用配置示例说明 .html" itemprop="url">
-              
-                <span itemprop="name">Spring常用配置示例</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/Spring源码解析之ApplicationContext继承结构分析.html" itemprop="url">
-              
-                <span itemprop="name">Spring源码解析之ApplicationContext继承结构分析</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/ORMLite使用指南.html" itemprop="url">
-              
-                <span itemprop="name">ORMLite使用指南</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/Java内存模型知识点小结.html" itemprop="url">
-              
-                <span itemprop="name">Java内存模型知识点小结---《深入理解Java内存模型》（程晓明）读书总结</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/计算机中的各种字符集编码详解.html" itemprop="url">
-              
-                <span itemprop="name">计算机中的各种字符集编码</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/Java多线程之多线程的创建与同步.html" itemprop="url">
-              
-                <span itemprop="name">java多线程之多线程的创建与同步</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-05T23:00:00+08:00"
-              content="2017-08-05" >
-          08-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-  </section>
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/2017/08/page/2/">2</a><a class="extend next" rel="next" href="/archives/2017/08/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
-
-
+  </div>
 
 
           </div>
@@ -718,6 +344,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
 
         </div>
         
@@ -737,8 +369,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/author.jpg"
@@ -789,11 +430,11 @@
               </span>
             
               <span class="links-of-author-item">
-                <a href="https://www.nowcoder.com/profile/394118/comments" target="_blank" title="牛客网">
+                <a href="http://blog.csdn.net/zffenger" target="_blank" title="CSDN">
                   
                     <i class="fa fa-fw fa-globe"></i>
                   
-                  牛客网
+                  CSDN
                 </a>
               </span>
             
@@ -829,6 +470,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dubbo知识点小结"><span class="nav-number">1.</span> <span class="nav-text">dubbo知识点小结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -933,12 +590,10 @@
   
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
+  
 
   
 
